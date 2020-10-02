@@ -1,0 +1,218 @@
+{
+    "Version": "1.0",
+    "Sections": [
+        {
+            "Name": "ExitTelescopeKey",
+            "Description": "Select The Key to be used to stop the Telescope.  By Default, [End] key is selected.",
+            "IsAdvanced": false,
+            "Keys": [
+                {
+                    "Options": [
+                        "End",
+                        "Del",
+                        "Home",
+                        "Ins",
+                        "Page Up",
+                        "Page Down",
+                        "Up Arrow",
+                        "Down Arrow",
+                        "Left Arrow",
+                        "Right Arrow",
+                        "F8",
+                        "F9",
+                        "F10",
+                        "F11",
+                        "F12",
+                        "A",
+                        "B",
+                        "C",
+                        "D",
+                        "E",
+                        "F",
+                        "G",
+                        "H",
+                        "I",
+                        "J",
+                        "K",
+                        "L",
+                        "M",
+                        "N",
+                        "O",
+                        "P",
+                        "Q",
+                        "R",
+                        "S",
+                        "T",
+                        "U",
+                        "V",
+                        "W",
+                        "X",
+                        "Y",
+                        "Z"
+                    ],
+                    "Value": 0,
+                    "Name": "DropDownExitKeys",
+                    "Description": null,
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.MultipleChoiceKey"
+                }
+            ],
+            "$version": "v1"
+        },
+        {
+            "Name": "ZoomInKey",
+            "Description": "Select The Key to be used to Zoom In.  By Default, [Down Arrow] key is selected. The scroll wheel on the mouse also zooms in and out.",
+            "IsAdvanced": false,
+            "Keys": [
+                {
+                    "Options": [
+                        "End",
+                        "Del",
+                        "Home",
+                        "Ins",
+                        "Page Up",
+                        "Page Down",
+                        "Up Arrow",
+                        "Down Arrow",
+                        "Left Arrow",
+                        "Right Arrow",
+                        "F8",
+                        "F9",
+                        "F10",
+                        "F11",
+                        "F12",
+                        "A",
+                        "B",
+                        "C",
+                        "D",
+                        "E",
+                        "F",
+                        "G",
+                        "H",
+                        "I",
+                        "J",
+                        "K",
+                        "L",
+                        "M",
+                        "N",
+                        "O",
+                        "P",
+                        "Q",
+                        "R",
+                        "S",
+                        "T",
+                        "U",
+                        "V",
+                        "W",
+                        "X",
+                        "Y",
+                        "Z"
+                    ],
+                    "Value": 7,
+                    "Name": "DropDownZoomInKey",
+                    "Description": null,
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.MultipleChoiceKey"
+                }
+            ],
+            "$version": "v1"
+        },
+        {
+            "Name": "ZoomOutKey",
+            "Description": "Select The Key to be used to Zoom Out.  By Default, [Up Arrow] key is selected. The scroll wheel on the mouse also zooms in and out.",
+            "IsAdvanced": false,
+            "Keys": [
+                {
+                    "Options": [
+                        "End",
+                        "Del",
+                        "Home",
+                        "Ins",
+                        "Page Up",
+                        "Page Down",
+                        "Up Arrow",
+                        "Down Arrow",
+                        "Left Arrow",
+                        "Right Arrow",
+                        "F8",
+                        "F9",
+                        "F10",
+                        "F11",
+                        "F12",
+                        "A",
+                        "B",
+                        "C",
+                        "D",
+                        "E",
+                        "F",
+                        "G",
+                        "H",
+                        "I",
+                        "J",
+                        "K",
+                        "L",
+                        "M",
+                        "N",
+                        "O",
+                        "P",
+                        "Q",
+                        "R",
+                        "S",
+                        "T",
+                        "U",
+                        "V",
+                        "W",
+                        "X",
+                        "Y",
+                        "Z"
+                    ],
+                    "Value": 6,
+                    "Name": "DropDownZoomOutKey",
+                    "Description": null,
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.MultipleChoiceKey"
+                }
+            ],
+            "$version": "v1"
+        },
+        {
+            "Name": "TelecopePrice",
+            "Description": "Enter a value to be used for the cost of the telescope; by default, the value is set at 10,000.",
+            "IsAdvanced": false,
+            "Keys": [
+                {
+                    "Min": 1,
+                    "Max": 25000,
+                    "Value": 10000,
+                    "Name": "TelescopePrice",
+                    "Description": null,
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderIntKey"
+                }
+            ],
+            "$version": "v1"
+        },
+        {
+            "Name": "TelescopeOverlay",
+            "Description": "Use The Telescope Overlay",
+            "IsAdvanced": false,
+            "Keys": [
+                {
+                    "Value": true,
+                    "Name": "UseTelescopeOverlay",
+                    "Description": null,
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
+                },
+                {
+                    "Value": false,
+                    "Name": "ShowTelescopeDirectionsOnScreen",
+                    "Description": null,
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
+                }
+            ],
+            "$version": "v1"
+        }
+    ]
+}

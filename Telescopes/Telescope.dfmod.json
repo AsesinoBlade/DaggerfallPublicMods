@@ -1,0 +1,18 @@
+{
+    "ModTitle": "Telescope",
+    "ModVersion": "1",
+    "ModAuthor": "Asesino",
+    "ContactInfo": null,
+    "DFUnity_Version": "0.10.17",
+    "ModDescription": null,
+    "GUID": "b7345018-50d2-4b14-8670-e9132885063f",
+    "Files": [
+        "Assets/Game/Mods/AsesinoMods/Telescopes/Docs/Telescope Readme.txt",
+        "Assets/Game/Mods/AsesinoMods/Telescopes/modsettings.json",
+        "Assets/Game/Mods/AsesinoMods/Telescopes/Scripts/Telescope.cs",
+        "Assets/Game/Mods/AsesinoMods/Telescopes/Scripts/AddTelescope.cs",
+        "Assets/Game/Mods/AsesinoMods/Telescopes/Scripts/_startTelescopes.cs"
+    ],
+    "Contributes": null,
+    "Dependencies": null
+}

@@ -1,0 +1,77 @@
+{
+    "Version": "1.0",
+    "Sections": [
+        {
+            "Name": "CustomCarryWeightSelector",
+            "Description": "Custom Carry Weight Selector",
+            "IsAdvanced": true,
+            "Keys": [
+                {
+                    "Value": true,
+                    "Name": "UseCustomStrengthMultiplier",
+                    "Description": "Enable Custom Strength Multipler ",
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
+                },
+                {
+                    "Min": 0.5,
+                    "Max": 10.0,
+                    "Value": 1.5,
+                    "Name": "Multiplier",
+                    "Description": "Multiplier Amount",
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
+                }
+            ],
+            "$version": "v1"
+        },
+        {
+            "Name": "ModifyCarryWeight",
+            "Description": null,
+            "IsAdvanced": false,
+            "Keys": [
+                {
+                    "Value": true,
+                    "Name": "UseModifyCarryWeight",
+                    "Description": "Modify Carry Weight through Athletic skills (climibing, jumping, running, and swimming)",
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
+                },
+                {
+                    "Min": 0.5,
+                    "Max": 10.0,
+                    "Value": 0.5,
+                    "Name": "Modifier",
+                    "Description": null,
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
+                }
+            ],
+            "$version": "v1"
+        },
+        {
+            "Name": "CustomWagonWeight",
+            "Description": null,
+            "IsAdvanced": false,
+            "Keys": [
+                {
+                    "Value": true,
+                    "Name": "useCustomWagonWeight",
+                    "Description": null,
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.ToggleKey"
+                },
+                {
+                    "Min": 0.1,
+                    "Max": 10.0,
+                    "Value": 1.0,
+                    "Name": "WagonWeightMultiplier",
+                    "Description": null,
+                    "$version": "v1",
+                    "$type": "DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings.SliderFloatKey"
+                }
+            ],
+            "$version": "v1"
+        }
+    ]
+}

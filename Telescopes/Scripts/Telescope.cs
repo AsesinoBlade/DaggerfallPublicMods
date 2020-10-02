@@ -1,0 +1,60 @@
+using DaggerfallWorkshop.Game;
+using DaggerfallWorkshop.Game.Items;
+using DaggerfallWorkshop.Game.Serialization;
+using UnityEngine;
+using System;
+using DaggerfallWorkshop.Game.UserInterface;
+
+public class Telescope : DaggerfallUnityItem {
+
+
+    public Telescope() : this(DaggerfallWorkshop._startTelescopes.telescopeCost)
+    {
+        var data = this.GetSaveData();
+        Debug.Log(data);
+    }
+
+
+    public Telescope(int baseValue) : base(ItemGroups.QuestItems, 0)
+    {
+        shortName = "Telescope";
+        value = DaggerfallWorkshop._startTelescopes.telescopeCost;
+        WorldTextureArchive = 208;
+        WorldTextureRecord = 4;
+        
+    }
+
+    public Telescope(ItemData_v1 item) : base(item)
+
+    {
+        item.className = "Telscope";
+    }
+   
+
+    public override bool IsStackable()
+    {
+        return true;
+    }
+
+    public override bool UseItem(ItemCollection collection)
+    {
+        if (!GameManager.Instance.PlayerEnterExit.IsPlayerSubmerged)
+        {
+            DaggerfallWorkshop._startTelescopes.TelescopeEnabled = true;
+            DaggerfallWorkshop._startTelescopes.curParalyzed = DaggerfallWorkshop._startTelescopes.pe.IsParalyzed; ;
+            DaggerfallUI.UIManager.PopWindow();
+            return true;
+        }
+        else
+            DaggerfallUI.MessageBox("Telescope does not work under water.");
+        return false;
+    }
+
+    public override ItemData_v1 GetSaveData()
+    {
+        ItemData_v1 data = base.GetSaveData();
+        data.className = typeof(Telescope).ToString();
+        return data;
+    }
+
+}
