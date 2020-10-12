@@ -7,10 +7,10 @@
     "ModDescription": "Adds Inventory Filter Functionality to Inventory and trade windows",
     "GUID": "0884fc63-26df-4ab5-bc4f-d530deadefd7",
     "Files": [
-        "Assets/Game/Mods/AsesinoMods/InventoryFilter/Docs/InventoryFilter Readme.txt",
-        "Assets/Game/Mods/AsesinoMods/InventoryFilter/Scripts/RegisterInventoryWindow.cs",
-        "Assets/Game/Mods/AsesinoMods/InventoryFilter/Scripts/AsesinoInventoryWindow.cs",
-        "Assets/Game/Mods/AsesinoMods/InventoryFilter/Scripts/AsesinoTradeWindow.cs"
+        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Docs/InventoryFilter Readme.txt",
+        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Scripts/RegisterInventoryWindow.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Scripts/AsesinoInventoryWindow.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Scripts/AsesinoTradeWindow.cs"
     ],
     "Contributes": null,
     "Dependencies": null

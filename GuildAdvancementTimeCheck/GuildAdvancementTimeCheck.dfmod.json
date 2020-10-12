@@ -1,0 +1,15 @@
+{
+    "ModTitle": "Guild Advancement Time Check",
+    "ModVersion": "1",
+    "ModAuthor": "Asesino",
+    "ContactInfo": null,
+    "DFUnity_Version": "0.10.22",
+    "ModDescription": null,
+    "GUID": "c279df02-0bf6-4fa3-bf68-813960c6ce1a",
+    "Files": [
+        "Assets/Game/Mods/DaggerfallPublicMods/GuildAdvancementTimeCheck/Scripts/AsesinoCharSheetWindow.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/GuildAvancementTimeCheck/Scripts/RegisterCharSheetWindow.cs"
+    ],
+    "Contributes": null,
+    "Dependencies": null
+}

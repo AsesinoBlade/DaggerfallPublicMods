@@ -7,11 +7,11 @@
     "ModDescription": null,
     "GUID": "b7345018-50d2-4b14-8670-e9132885063f",
     "Files": [
-        "Assets/Game/Mods/AsesinoMods/Telescopes/Docs/Telescope Readme.txt",
-        "Assets/Game/Mods/AsesinoMods/Telescopes/modsettings.json",
-        "Assets/Game/Mods/AsesinoMods/Telescopes/Scripts/Telescope.cs",
-        "Assets/Game/Mods/AsesinoMods/Telescopes/Scripts/AddTelescope.cs",
-        "Assets/Game/Mods/AsesinoMods/Telescopes/Scripts/_startTelescopes.cs"
+        "Assets/Game/Mods/DaggerfallPublicMods/Telescopes/Docs/Telescope Readme.txt",
+        "Assets/Game/Mods/DaggerfallPublicMods/Telescopes/modsettings.json",
+        "Assets/Game/Mods/DaggerfallPublicMods/Telescopes/Scripts/Telescope.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/Telescopes/Scripts/AddTelescope.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/Telescopes/Scripts/_startTelescopes.cs"
     ],
     "Contributes": null,
     "Dependencies": null
