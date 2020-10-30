@@ -1,10 +1,10 @@
 This is the official readme for your mod. It should encompass all important information, as well as any references to any other documentation you plan on attaching to this page. Here's a good example of a nicely formatted Readme file if you need a template to start from.
 
-Inventory Filter- 1.2
+Inventory Filter- 1.4
 This implements a filter to the inventory window; allowing you to filter to specific items, categories of items, or types of materials.
 
 :: REQUIREMENTS
-• Daggerfall Unity Version 0.10.11 or higher
+• Daggerfall Unity Version 0.10.26 or higher
 
 :: FEATURES
 * you can perform positive filters such as steel to find all steel items
@@ -13,9 +13,7 @@ This implements a filter to the inventory window; allowing you to filter to spec
 
 :: Instructions
 Installtion
-Download "Inventory Filter.dfmod" for your Operating System (windows, OSX, or Linux)
-Note: Daggerfall Unity version 0.10.11 or higher required.
-Copy "Inventory Filter.dfmod" to your daggerfall_Data/StreamingAssets/Mods folder.
+Download the mod, and copy  "Inventory Filter.dfmod" for your Operating System (windows, OSX, or Linux) into your daggerfall_Data/StreamingAssets/Mods folder.
 Start the game, and click on mods (lower left corner). Find Inventory Filter in the list of mods, and then ensure that it is enabled.
 
 Uninstall

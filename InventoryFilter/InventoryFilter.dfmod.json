@@ -1,17 +1,15 @@
 {
     "ModTitle": "Inventory Filter",
-    "ModVersion": "1.3",
+    "ModVersion": "1.4",
     "ModAuthor": "Asesino",
-    "ContactInfo": null,
-    "DFUnity_Version": "0.10.20",
+    "DFUnity_Version": "0.10.26",
     "ModDescription": "Adds Inventory Filter Functionality to Inventory and trade windows",
-    "GUID": "0884fc63-26df-4ab5-bc4f-d530deadefd7",
+    "GUID": "c8dc6c0e-9feb-4e6c-8f97-8f9ae560d804",
     "Files": [
-        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Docs/InventoryFilter Readme.txt",
-        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Scripts/RegisterInventoryWindow.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Scripts/AsesinoTradeWindow.cs",
         "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Scripts/AsesinoInventoryWindow.cs",
-        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Scripts/AsesinoTradeWindow.cs"
-    ],
-    "Contributes": null,
-    "Dependencies": null
+        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Scripts/RegisterInventoryWindow.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Docs/InventoryFilter Readme.txt",
+        "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/InventoryFilter.dfmod.json"
+    ]
 }

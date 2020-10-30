@@ -70,11 +70,21 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         #region Constructors
 
-        public AsesinoTradeWindow(IUserInterfaceManager uiManager, DaggerfallBaseWindow previous = null, WindowModes windowMode = WindowModes.Sell, IGuild guild = null)
+        public AsesinoTradeWindow(IUserInterfaceManager uiManager, DaggerfallBaseWindow previous, WindowModes windowMode, IGuild guild)
             : base(uiManager, previous, windowMode, guild)
         {
-            
+
+
         }
+
+        public AsesinoTradeWindow(IUserInterfaceManager uiManager, DaggerfallBaseWindow previous = null)
+            : base(uiManager, previous, WindowModes.Sell, null)
+        {
+
+
+        }
+
+        #endregion
 
         protected override void Setup()
         {
@@ -117,29 +127,15 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             filterButtonNeedUpdate = true;
         }
 
-        #endregion
-
+        
+        
         public override void OnPop()
         {
             ClearFilterFields();
             base.OnPop();
         }
 
-        private void UpdateFilterButton()
-        {
-            if (filterString != null && localFilterButton.Enabled)
-            {
-                localFilterButton.Enabled = false;
-                localFilterTextBox.Enabled = true;
-                localCloseFilterButton.Enabled = true;
-            }
-            else
-            {
-                localFilterButton.Enabled = true;
-                localFilterTextBox.Enabled = false;
-                localCloseFilterButton.Enabled = false;
-            }
-        }
+
 
         public override void Update()
         {
@@ -165,7 +161,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             FilterRemoteItems();
             remoteItemListScroller.Items = remoteItemsFiltered;
         }
-
+        
         protected override void FilterLocalItems()
         {
             localItemsFiltered.Clear();
@@ -238,7 +234,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 for (int i = 0; i < remoteItems.Count; i++)
                    remoteItemsFiltered.Add(remoteItems.GetItem(i));
         }
-
+        
         protected bool ItemPassesFilter(DaggerfallUnityItem item)
         {
             bool iterationPass = false;
@@ -275,7 +271,23 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
             return true;
         }
+        
 
+        private void UpdateFilterButton()
+        {
+            if (filterString != null && localFilterButton.Enabled)
+            {
+                localFilterButton.Enabled = false;
+                localFilterTextBox.Enabled = true;
+                localCloseFilterButton.Enabled = true;
+            }
+            else
+            {
+                localFilterButton.Enabled = true;
+                localFilterTextBox.Enabled = false;
+                localCloseFilterButton.Enabled = false;
+            }
+        }
         private void ClearFilterFields()
         {
             filterString = null;
@@ -303,6 +315,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             filterString = localFilterTextBox.Text.ToLower();
             Refresh(false);
         }
+        
+
     }
 
 }
