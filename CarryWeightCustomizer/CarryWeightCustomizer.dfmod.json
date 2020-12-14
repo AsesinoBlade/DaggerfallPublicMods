@@ -2,14 +2,12 @@
     "ModTitle": "Carry Weight Customizer",
     "ModVersion": "2.0",
     "ModAuthor": "Asesino",
-    "ContactInfo": null,
     "DFUnity_Version": "0.10.15",
     "ModDescription": "Increases Carry Weight and Wagon Weight",
     "GUID": "5de6c321-2183-4ccc-b878-e2b962106e4c",
     "Files": [
+        "Assets/Game/Mods/DaggerfallPublicMods/CarryWeightCustomizer/modsettings.json",
         "Assets/Game/Mods/DaggerfallPublicMods/CarryWeightCustomizer/Scripts/CustomCarryWeight.cs",
-        "Assets/Game/Mods/DaggerfallPublicMods/CarryWeightCustomerizer/modsettings.json"
-    ],
-    "Contributes": null,
-    "Dependencies": null
-}Carr
+        "Assets/Game/Mods/DaggerfallPublicMods/CarryWeightCustomizer/Docs/CarryWeightCustomizerReadMe.txt"
+    ]
+}
