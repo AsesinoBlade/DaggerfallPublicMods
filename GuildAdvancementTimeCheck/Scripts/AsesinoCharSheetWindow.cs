@@ -40,7 +40,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 tab.x = 125;
                 tokens.Add(new TextFile.Token()
                 {
-                    text = TextManager.Instance.GetLocalizedText("affiliation"),
+                    text = "affiliation",
                     formatting = TextFile.Formatting.TextHighlight
                 }); ;
                 tokens.Add(tab);
