@@ -195,6 +195,16 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                         if (ItemPassesFilter(item))
                             AddLocalItem(item);
                     }
+                    else
+                    {
+                        if(GameManager.Instance.PlayerEnterExit.BuildingType == DaggerfallConnect.DFLocation.BuildingTypes.Alchemist &&
+                           item.LongName.ToLower().Contains("potion"))
+                        {
+                            if (ItemPassesFilter(item))
+                                AddLocalItem(item);
+                        }
+
+                    }
                 }
             }
         }
