@@ -1,0 +1,15 @@
+{
+    "ModTitle": "Telescopes and Binoculars",
+    "ModVersion": "0.5",
+    "ModAuthor": "Asesino",
+    "DFUnity_Version": "0.11.1",
+    "GUID": "7469d418-8795-40b4-9faa-ee8cae56a596",
+    "Files": [
+        "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/TelescopesAndBinoculars.dfmod.json",
+        "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/ItemTemplates.json",
+        "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/Scripts/ItemsScopes.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/Scripts/RTTextTokenHolder.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/Scripts/TelescopeAndBinoculars.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/Scripts/AbstractItemScopes.cs"
+    ]
+}

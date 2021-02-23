@@ -1,0 +1,22 @@
+[
+    {
+        "index": 830,
+        "name": "Telescope",
+        "baseWeight": 6,
+        "hitPoints": 200,
+        "capacityOrTarget": 0,
+        "basePrice": 1000,
+        "enchantmentPoints": 0,
+        "rarity": 15,
+        "variants": 0,
+        "drawOrderOrEffect": 0,
+        "isBluntWeapon": false,
+        "isLiquid": false,
+        "isOneHanded": false,
+        "isIngredient": false,
+        "worldTextureArchive": 208,
+        "worldTextureRecord": 4,
+        "playerTextureArchive": 0,
+        "playerTextureRecord": 0
+    }
+]
