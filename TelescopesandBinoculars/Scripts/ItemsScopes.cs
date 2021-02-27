@@ -23,11 +23,11 @@ namespace Telescopes
         public override int DurabilityLoss => 2;
 
 
-        public override bool IsStationary => false;
+        public override bool IsStationary => true;
 
-        public override int MaxZoom => 20;
+        public override int MaxZoom => 40;
 
-        public override bool NightVision => true;
+        public override bool NightVision => false;
 
         /*
         public override Rect TelescopeDirectionPos
@@ -90,39 +90,7 @@ namespace Telescopes
 
         public override Texture2D CalculateTexture()
         {
-            int w = Screen.width;
-            int h = Screen.height;
-            int cw = w;
-            int ch = h;
-            Texture2D telescopeLens = new Texture2D(cw, ch);
-
-
-            bool portrait = w > h ? false : true;
-
-            int r = portrait ? cw / 2 : ch / 2;
-
-            for (int i = 0; i < cw; i++)
-                for (int j = 0; j < ch; j++)
-                    telescopeLens.SetPixel(i, j, Color.black);
-            telescopeLens.Apply();
-
-            for (int i = (int)(cw - r); i < cw + r; i++)
-            {
-                for (int j = (int)(ch - r); j < ch + r; j++)
-                {
-                    float dw = i - cw;
-                    float dh = j - ch;
-                    float d = Mathf.Sqrt(dw * dw + dh * dh);
-                    if (d <= r)
-                        if (portrait)
-                            telescopeLens.SetPixel(i - (int)(cw - r), j + (ch / 2) - r - (int)(ch - r), Color.clear);
-                        else
-                            telescopeLens.SetPixel(i + (cw / 2) - r - (int)(cw - r), j - (int)(ch - r), Color.clear);
-                }
-            }
-            telescopeLens.Apply();
-            telescopeLens.Compress(true);
-            return telescopeLens;
+            return AbstractItemScopes.CalculateTelescopeTexture();
         }
 
 
@@ -135,6 +103,180 @@ namespace Telescopes
 
 
     }
+
+    public class ItemBinoculars : AbstractItemScopes
+    {
+        public const int templateIndex = 831;
+        public override int DurabilityLoss => 2;
+
+
+        public override bool IsStationary => false;
+
+        public override int MaxZoom => 5;
+
+        public override bool NightVision => false;
+
+        /*
+        public override Rect TelescopeDirectionPos
+        {
+            get { return TelescopeDirectionPos; }
+            set { TelescopeDirectionPos = value; }
+        }
+
+        public override Texture2D TelescopeLens
+        {
+            get { return TelescopeLens; }
+            set { TelescopeLens = value; }
+        }
+
+        */
+        public override void UpdateCost(int val)
+        {
+            this.value = val;
+        }
+
+        public ItemBinoculars() : base(ItemGroups.UselessItems2, templateIndex)
+        {
+            UpdateCost(Telescopes.TelescopeAndBinoculars.TelescopeCost);
+        }
+
+        public override uint GetItemID()
+        {
+            return templateIndex;
+        }
+
+
+
+
+        public override Rect CalculateTelescopeDirectionPos()
+        {
+            int posX = 0;
+            int posY = 0;
+            var screenX = Screen.width;
+            var screenY = Screen.height;
+
+            if (Telescopes.TelescopeAndBinoculars.telescopeOverlay)
+                if (screenX > screenY)
+                {
+                    posX = (screenX / 2 + screenY / 2) + 10;
+                    posY = screenY / 2 - 100;
+                }
+                else
+                {
+                    posX = screenX / 2 - 100;
+                    posY = (screenX / 2 + screenY / 2) + 10; ;
+                }
+            else
+            {
+                posX = screenX / 2 - 100;
+                posY = (screenY - 250);
+            }
+
+            return new Rect(posX, posY, 200, 200);
+        }
+
+        public override Texture2D CalculateTexture()
+        {
+            return AbstractItemScopes.CalculateBinocularTexture();
+        }
+
+        public override ItemData_v1 GetSaveData()
+        {
+            ItemData_v1 data = base.GetSaveData();
+            data.className = typeof(ItemBinoculars).ToString();
+            return data;
+        }
+
+
+    }
+
+    public class ItemNVGoggles : AbstractItemScopes
+    {
+        public const int templateIndex = 832;
+        public override int DurabilityLoss => 2;
+
+
+        public override bool IsStationary => false;
+
+        public override int MaxZoom => 2;
+
+        public override bool NightVision => true;
+
+        /*
+        public override Rect TelescopeDirectionPos
+        {
+            get { return TelescopeDirectionPos; }
+            set { TelescopeDirectionPos = value; }
+        }
+
+        public override Texture2D TelescopeLens
+        {
+            get { return TelescopeLens; }
+            set { TelescopeLens = value; }
+        }
+
+        */
+        public override void UpdateCost(int val)
+        {
+            this.value = val;
+        }
+
+        public ItemNVGoggles() : base(ItemGroups.UselessItems2, templateIndex)
+        {
+            UpdateCost(Telescopes.TelescopeAndBinoculars.TelescopeCost);
+        }
+
+        public override uint GetItemID()
+        {
+            return templateIndex;
+        }
+
+
+
+
+        public override Rect CalculateTelescopeDirectionPos()
+        {
+            int posX = 0;
+            int posY = 0;
+            var screenX = Screen.width;
+            var screenY = Screen.height;
+
+            if (Telescopes.TelescopeAndBinoculars.telescopeOverlay)
+                if (screenX > screenY)
+                {
+                    posX = (screenX / 2 + screenY / 2) + 10;
+                    posY = screenY / 2 - 100;
+                }
+                else
+                {
+                    posX = screenX / 2 - 100;
+                    posY = (screenX / 2 + screenY / 2) + 10; ;
+                }
+            else
+            {
+                posX = screenX / 2 - 100;
+                posY = (screenY - 250);
+            }
+
+            return new Rect(posX, posY, 200, 200);
+        }
+
+        public override Texture2D CalculateTexture()
+        {
+            return AbstractItemScopes.CalculateBinocularTexture();
+        }
+
+        public override ItemData_v1 GetSaveData()
+        {
+            ItemData_v1 data = base.GetSaveData();
+            data.className = typeof(ItemNVGoggles).ToString();
+            return data;
+        }
+
+
+    }
+
+
 
 }
 

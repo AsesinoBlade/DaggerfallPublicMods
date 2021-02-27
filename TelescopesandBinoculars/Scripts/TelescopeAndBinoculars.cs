@@ -94,6 +94,8 @@ namespace Telescopes
             RegisterCommands();
             ItemHelper itemHelper = DaggerfallUnity.Instance.ItemHelper;
             itemHelper.RegisterCustomItem(ItemTelescope.templateIndex, ItemGroups.UselessItems2, typeof(ItemTelescope));
+            itemHelper.RegisterCustomItem(ItemBinoculars.templateIndex, ItemGroups.UselessItems2, typeof(ItemBinoculars));
+            itemHelper.RegisterCustomItem(ItemNVGoggles.templateIndex, ItemGroups.UselessItems2, typeof(ItemNVGoggles));
 
             pos = new Rect(Vector2.zero, new Vector2(Screen.width, Screen.height));
 
@@ -117,7 +119,7 @@ namespace Telescopes
             lightComponent = lightGameObject.AddComponent<Light>();
             lightComponent.color = Color.green;
             lightGameObject.transform.position = new Vector3(0, 5, 0);
-            lightComponent.intensity = 3;
+            lightComponent.intensity = 1;
             lightComponent.enabled = false;
 
 
@@ -383,6 +385,10 @@ namespace Telescopes
             {
                DaggerfallUnityItem scope = GetCustomItem(830);
                pe.Items.AddItem(scope);
+                scope = GetCustomItem(831);
+                pe.Items.AddItem(scope);
+                scope = GetCustomItem(832);
+                pe.Items.AddItem(scope);
 
                 return "Scopes added";
 

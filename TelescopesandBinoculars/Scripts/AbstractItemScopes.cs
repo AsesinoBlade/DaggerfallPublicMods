@@ -45,6 +45,13 @@ namespace Telescopes
         public abstract bool NightVision { get; }
 
 
+
+
+
+
+
+
+
         //public abstract Rect TelescopeDirectionPos { get; set; }
 
         //public abstract Texture2D TelescopeLens { get; set; }
@@ -57,7 +64,7 @@ namespace Telescopes
         {
             if (!GameManager.Instance.PlayerEnterExit.IsPlayerSubmerged)
             {
-                DaggerfallWorkshop._startTelescopes.TelescopeEnabled = true;
+                Telescopes.TelescopeAndBinoculars.TelescopeEnabled = true;
                 Telescopes.TelescopeAndBinoculars.curParalyzed = GameManager.Instance.PlayerEntity.IsParalyzed;
                 Telescopes.TelescopeAndBinoculars.isStationary = IsStationary;
                 Telescopes.TelescopeAndBinoculars.maxLevel = MaxZoom;
@@ -74,6 +81,103 @@ namespace Telescopes
             return false;
         }
 
+        public static Texture2D CalculateTelescopeTexture()
+        {
+            int w = Screen.width;
+            int h = Screen.height;
+            int cw = w;
+            int ch = h;
+            Texture2D telescopeLens = new Texture2D(cw, ch);
 
+
+            bool portrait = w > h ? false : true;
+
+            int r = portrait ? cw / 2 : ch / 2;
+
+            for (int i = 0; i < cw; i++)
+                for (int j = 0; j < ch; j++)
+                    telescopeLens.SetPixel(i, j, Color.black);
+            telescopeLens.Apply();
+
+            for (int i = (int)(cw - r); i < cw + r; i++)
+            {
+                for (int j = (int)(ch - r); j < ch + r; j++)
+                {
+                    float dw = i - cw;
+                    float dh = j - ch;
+                    float d = Mathf.Sqrt(dw * dw + dh * dh);
+                    if (d <= r)
+                        if (portrait)
+                            telescopeLens.SetPixel(i - (int)(cw - r), j + (ch / 2) - r - (int)(ch - r), Color.clear);
+                        else
+                            telescopeLens.SetPixel(i + (cw / 2) - r - (int)(cw - r), j - (int)(ch - r), Color.clear);
+                }
+            }
+            telescopeLens.Apply();
+            telescopeLens.Compress(true);
+            return telescopeLens;
+        }
+
+
+        public static Texture2D CalculateBinocularTexture()
+        {
+            int w = Screen.width;
+            int h = Screen.height;
+
+            int cw = w;
+            int ch = h;
+            Texture2D BinocularsLens = new Texture2D(cw, ch);
+
+
+            bool portrait = w > h ? false : true;
+
+            int r = portrait ? cw / 2 : ch / 2;
+            int spacing = (int)((float)r * 1.1f);
+            int left = portrait ? h - spacing : w - spacing;
+            int right = portrait ? h + spacing : w + spacing;
+
+            for (int i = 0; i < cw; i++)
+                for (int j = 0; j < ch; j++)
+                    BinocularsLens.SetPixel(i, j, Color.black);
+            BinocularsLens.Apply();
+
+            cw = left;
+
+            for (int i = (int)(cw - r); i < cw + r; i++)
+            {
+                for (int j = (int)(ch - r); j < ch + r; j++)
+                {
+                    float dw = i - cw;
+                    float dh = j - ch;
+                    float d = Mathf.Sqrt(dw * dw + dh * dh);
+                    if (d <= r)
+                        if (portrait)
+                            BinocularsLens.SetPixel(i - (int)(cw - r), j + (ch / 2) - r - (int)(ch - r), Color.clear);
+                        else
+                            BinocularsLens.SetPixel(i + (cw / 2) - r - (int)(cw - r), j - (int)(ch - r), Color.clear);
+                }
+            }
+
+            cw = right;
+
+            for (int i = (int)(cw - r); i < cw + r; i++)
+            {
+                for (int j = (int)(ch - r); j < ch + r; j++)
+                {
+                    float dw = i - cw;
+                    float dh = j - ch;
+                    float d = Mathf.Sqrt(dw * dw + dh * dh);
+                    if (d <= r)
+                        if (portrait)
+                            BinocularsLens.SetPixel(i - (int)(cw - r), j + (ch / 2) - r - (int)(ch - r), Color.clear);
+                        else
+                            BinocularsLens.SetPixel(i + (cw / 2) - r - (int)(cw - r), j - (int)(ch - r), Color.clear);
+                }
+            }
+
+            BinocularsLens.Apply();
+            BinocularsLens.Compress(true);
+            return BinocularsLens;
+        }
     }
 }
