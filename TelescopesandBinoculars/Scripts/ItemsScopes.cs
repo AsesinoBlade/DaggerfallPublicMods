@@ -112,7 +112,7 @@ namespace Telescopes
 
         public override bool IsStationary => false;
 
-        public override int MaxZoom => 5;
+        public override int MaxZoom => 10;
 
         public override bool NightVision => false;
 
@@ -198,7 +198,7 @@ namespace Telescopes
 
         public override bool IsStationary => false;
 
-        public override int MaxZoom => 2;
+        public override int MaxZoom => 5;
 
         public override bool NightVision => true;
 

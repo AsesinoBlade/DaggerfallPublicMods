@@ -38,7 +38,7 @@ namespace DaggerfallWorkshop
         public KeyCode thisKeyCode;
         public bool telescopeOverlay = true;
         public Rect pos;
-        public Camera mainCamera = GameManager.Instance.MainCamera;
+        public Camera mainCamera;
         public Rect TelescopeDirectionPos;
         public GUIStyle guiStyle = new GUIStyle();
         public bool showTelescopeDirections = false;
@@ -65,7 +65,7 @@ namespace DaggerfallWorkshop
             Debug.Log("tele reading parms");
             AssignSettings();
             Debug.Log("tele read parms");
-            
+            mainCamera = GameManager.Instance.MainCamera;
             mod.IsReady = true;
         }
 

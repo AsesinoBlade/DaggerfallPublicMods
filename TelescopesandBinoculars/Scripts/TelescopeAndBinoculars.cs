@@ -73,11 +73,6 @@ namespace Telescopes
         static float prevFov;
         static float origFov;
 
-        //public const string audioClips = "Zero Gravity 1.ogg";
-
-        //list of audio clip assets bundled in mod
-
-
         void Awake()
         {
 
@@ -153,7 +148,7 @@ namespace Telescopes
 
             fovCamera.fieldOfView = prevFov;
 
-            if (GameManager.Instance.StateManager.CurrentState == StateManager.StateTypes.Game && (Input.GetKeyDown(toggleKey) || Input.GetKeyDown(escKey)))
+            if (Input.GetKeyDown(toggleKey) || Input.GetKeyDown(escKey))
             {
                 TelescopeEnabled = !TelescopeEnabled;
                 fovCamera.fieldOfView = origFov;
