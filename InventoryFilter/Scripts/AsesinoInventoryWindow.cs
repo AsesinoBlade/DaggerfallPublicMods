@@ -152,18 +152,19 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         private void UpdateFilterButton()
         {
-            if (filterString != null && localFilterButton.Enabled)
-            {
-                localFilterButton.Enabled = false;
-                localFilterTextBox.Enabled = true;
-                localCloseFilterButton.Enabled = true;
-            }
-            else
-            {
-                localFilterButton.Enabled = true;
-                localFilterTextBox.Enabled = false;
-                localCloseFilterButton.Enabled = false;
-            }
+            if (localFilterButton != null && localFilterTextBox != null && localCloseFilterButton != null)
+                if (filterString != null && localFilterButton.Enabled)
+                {
+                    localFilterButton.Enabled = false;
+                    localFilterTextBox.Enabled = true;
+                    localCloseFilterButton.Enabled = true;
+                }
+                else
+                {
+                    localFilterButton.Enabled = true;
+                    localFilterTextBox.Enabled = false;
+                    localCloseFilterButton.Enabled = false;
+                }
         }
 
         protected override void FilterLocalItems()
@@ -245,7 +246,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         private void ClearFilterFields()
         {
             filterString = null;
-            localFilterTextBox.Text = string.Empty;
+            if (localFilterTextBox != null)
+                localFilterTextBox.Text = string.Empty;
             UpdateFilterButton();
         }
 
@@ -260,6 +262,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         {
             ClearFilterFields();
             Refresh(false);
+            SetFocus(null);
             filterButtonNeedUpdate = true;
         }
 
