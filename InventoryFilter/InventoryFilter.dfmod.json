@@ -2,7 +2,7 @@
     "ModTitle": "Inventory Filter",
     "ModVersion": "1.4",
     "ModAuthor": "Asesino",
-    "DFUnity_Version": "0.10.26",
+    "DFUnity_Version": "0.11.2",
     "ModDescription": "Adds Inventory Filter Functionality to Inventory and trade windows",
     "GUID": "c8dc6c0e-9feb-4e6c-8f97-8f9ae560d804",
     "Files": [

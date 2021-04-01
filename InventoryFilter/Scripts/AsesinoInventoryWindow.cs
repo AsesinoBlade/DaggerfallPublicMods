@@ -209,9 +209,19 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected bool ItemPassesFilter(DaggerfallUnityItem item)
         {
             bool iterationPass = false;
+            bool isRecipe = false;
+            string recipeName = string.Empty;
 
             if (String.IsNullOrEmpty(filterString))
                 return true;
+
+            if (item.LongName.ToLower().Contains("recipe"))
+            {
+                TextFile.Token[] tokens = ItemHelper.GetItemInfo(item, DaggerfallUnity.TextProvider);
+                MacroHelper.ExpandMacros(ref tokens, item);
+                recipeName = tokens[0].text;
+                isRecipe = true;
+            }
 
             foreach (string word in filterString.Split(' '))
             {
@@ -223,6 +233,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                         iterationPass = true;
                         if (item.LongName.IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
                             iterationPass = false;
+                        else if (isRecipe &&  recipeName.IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
+                            iterationPass = false;
                         else if (itemGroupNames[(int)item.ItemGroup].IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
                             iterationPass = false;
                     }
@@ -230,6 +242,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     {
                         iterationPass = false;
                         if (item.LongName.IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
+                            iterationPass = true;
+                        else if (isRecipe && recipeName.IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
                             iterationPass = true;
                         else if (itemGroupNames[(int)item.ItemGroup].IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
                             iterationPass = true;
