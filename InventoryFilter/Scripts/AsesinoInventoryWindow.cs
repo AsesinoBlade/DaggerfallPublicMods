@@ -206,11 +206,74 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 }
         }
 
+        protected string GetSearchTags(DaggerfallUnityItem item)
+        {
+            var equipSlot = GameManager.Instance.PlayerEntity.ItemEquipTable.GetEquipSlot(item);
+            switch (equipSlot)
+            {
+                case EquipSlots.None:
+                    return string.Empty;
+                case EquipSlots.Amulet0:
+                case EquipSlots.Amulet1:
+                    return RegisterInventoryWindow.Amulet;
+                case EquipSlots.Bracelet0:
+                case EquipSlots.Bracelet1:
+                    return RegisterInventoryWindow.Bracelet;
+                case EquipSlots.Bracer0:
+                case EquipSlots.Bracer1:
+                    return RegisterInventoryWindow.Bracer;
+                case EquipSlots.Ring0:
+                case EquipSlots.Ring1:
+                    return RegisterInventoryWindow.Ring;
+                case EquipSlots.Mark0:
+                case EquipSlots.Mark1:
+                    return RegisterInventoryWindow.Mark;
+                case EquipSlots.Crystal0:
+                case EquipSlots.Crystal1:
+                    return RegisterInventoryWindow.Crystal;
+                case EquipSlots.Head:
+                    return RegisterInventoryWindow.Head;
+                case EquipSlots.RightArm:
+                    return RegisterInventoryWindow.RightArm;
+                case EquipSlots.LeftArm:
+                    return RegisterInventoryWindow.LeftArm;
+                case EquipSlots.Cloak1:
+                case EquipSlots.Cloak2:
+                    return RegisterInventoryWindow.Cloak;
+                case EquipSlots.ChestClothes:
+                    return RegisterInventoryWindow.ChestClothes;
+                case EquipSlots.ChestArmor:
+                    return RegisterInventoryWindow.ChestArmor;
+                case EquipSlots.RightHand:
+                case EquipSlots.Gloves:
+                    return RegisterInventoryWindow.RightHand;
+                case EquipSlots.LeftHand:
+                    return RegisterInventoryWindow.LeftHand;
+                case EquipSlots.LegsArmor:
+                    return RegisterInventoryWindow.LegsArmor;
+                case EquipSlots.LegsClothes:
+                    return RegisterInventoryWindow.LegsClothes;
+                case EquipSlots.Feet:
+                    return RegisterInventoryWindow.Feet;
+                default:
+                    return string.Empty;
+            }
+
+        }
+        
         protected bool ItemPassesFilter(DaggerfallUnityItem item)
         {
             bool iterationPass = false;
             bool isRecipe = false;
             string recipeName = string.Empty;
+
+            string str = string.Empty;
+            str = GetSearchTags(item);
+
+            if (str != string.Empty)
+            {
+                Debug.Log($"returned {str}");
+            }
 
             if (String.IsNullOrEmpty(filterString))
                 return true;
@@ -237,6 +300,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                             iterationPass = false;
                         else if (itemGroupNames[(int)item.ItemGroup].IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
                             iterationPass = false;
+                        else if (str.IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
+                            iterationPass = false;
                     }
                     else
                     {
@@ -247,6 +312,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                             iterationPass = true;
                         else if (itemGroupNames[(int)item.ItemGroup].IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
                             iterationPass = true;
+                        else if (str.IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
+                                iterationPass = true;
+
                     }
 
                     if (!iterationPass)
