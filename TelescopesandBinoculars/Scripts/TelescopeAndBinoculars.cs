@@ -134,7 +134,8 @@ namespace Telescopes
         {
             if (!TelescopeEnabled)
             {
-                lightComponent.enabled = false;
+                if (lightComponent != null)
+                    lightComponent.enabled = false;
                 return;
             }
 
