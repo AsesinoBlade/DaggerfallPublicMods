@@ -7,23 +7,6 @@ using DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings;
 public class RegisterInventoryWindow : MonoBehaviour
 {
     static Mod mod;
-    public static string Amulet { get; private set; }
-    public static string Bracelet { get; private set; }
-    public static string Bracer { get; private set; }
-    public static string Ring { get; private set; }
-    public static string Mark { get; private set; }
-    public static string Crystal { get; private set; }
-    public static string Head { get; private set; }
-    public static string RightArm { get; private set; }
-    public static string LeftArm { get; private set; }
-    public static string Cloak { get; private set; }
-    public static string ChestArmor { get; private set; }
-    public static string ChestClothes { get; private set; }
-    public static string RightHand { get; private set; }
-    public static string LeftHand { get; private set; }
-    public static string LegsArmor { get; private set; }
-    public static string LegsClothes { get; private set; }
-    public static string Feet { get; private set; }
 
     public void Awake()
     {
@@ -36,23 +19,23 @@ public class RegisterInventoryWindow : MonoBehaviour
 
     private void LoadSettings(ModSettings settings, ModSettingsChange change)
     {
-        Amulet = settings.GetString("SearchTags", "Amulet");
-        Bracelet = settings.GetString("SearchTags", "Bracelet");
-        Bracer = settings.GetString("SearchTags", "Bracer");
-        Ring = settings.GetString("SearchTags", "Ring");
-        Mark = settings.GetString("SearchTags", "Mark");
-        Crystal = settings.GetString("SearchTags", "Crystal");
-        Head = settings.GetString("SearchTags", "Head");
-        RightArm = settings.GetString("SearchTags", "RightArm");
-        LeftArm = settings.GetString("SearchTags", "LeftArm");
-        Cloak = settings.GetString("SearchTags", "Cloak");
-        ChestArmor = settings.GetString("SearchTags", "ChestArmor");
-        ChestClothes = settings.GetString("SearchTags", "ChestClothes");
-        RightHand = settings.GetString("SearchTags", "RightHand");
-        LeftHand = settings.GetString("SearchTags", "LeftHand");
-        LegsArmor = settings.GetString("SearchTags", "LegsArmor");
-        LegsClothes = settings.GetString("SearchTags", "LegsClothes");
-        Feet = settings.GetString("SearchTags", "Feet");
+        AsesinoInventoryWindow.Amulet = settings.GetString("SearchTags", "Amulet");
+        AsesinoInventoryWindow.Bracelet = settings.GetString("SearchTags", "Bracelet");
+        AsesinoInventoryWindow.Bracer = settings.GetString("SearchTags", "Bracer");
+        AsesinoInventoryWindow.Ring = settings.GetString("SearchTags", "Ring");
+        AsesinoInventoryWindow.Mark = settings.GetString("SearchTags", "Mark");
+        AsesinoInventoryWindow.Crystal = settings.GetString("SearchTags", "Crystal");
+        AsesinoInventoryWindow.Head = settings.GetString("SearchTags", "Head");
+        AsesinoInventoryWindow.RightArm = settings.GetString("SearchTags", "RightArm");
+        AsesinoInventoryWindow.LeftArm = settings.GetString("SearchTags", "LeftArm");
+        AsesinoInventoryWindow.Cloak = settings.GetString("SearchTags", "Cloak");
+        AsesinoInventoryWindow.ChestArmor = settings.GetString("SearchTags", "ChestArmor");
+        AsesinoInventoryWindow.ChestClothes = settings.GetString("SearchTags", "ChestClothes");
+        AsesinoInventoryWindow.RightHand = settings.GetString("SearchTags", "RightHand");
+        AsesinoInventoryWindow.LeftHand = settings.GetString("SearchTags", "LeftHand");
+        AsesinoInventoryWindow.LegsArmor = settings.GetString("SearchTags", "LegsArmor");
+        AsesinoInventoryWindow.LegsClothes = settings.GetString("SearchTags", "LegsClothes");
+        AsesinoInventoryWindow.Feet = settings.GetString("SearchTags", "Feet");
     }
 
     public void Start()

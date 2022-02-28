@@ -69,7 +69,23 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         };
 
 
-
+        public static string Amulet { get;  set; }
+        public static string Bracelet { get;  set; }
+        public static string Bracer { get;  set; }
+        public static string Ring { get;  set; }
+        public static string Mark { get;  set; }
+        public static string Crystal { get;  set; }
+        public static string Head { get;  set; }
+        public static string RightArm { get;  set; }
+        public static string LeftArm { get;  set; }
+        public static string Cloak { get;  set; }
+        public static string ChestArmor { get;  set; }
+        public static string ChestClothes { get;  set; }
+        public static string RightHand { get;  set; }
+        public static string LeftHand { get;  set; }
+        public static string LegsArmor { get;  set; }
+        public static string LegsClothes { get;  set; }
+        public static string Feet { get;  set; }
 
 
         public AsesinoInventoryWindow(IUserInterfaceManager uiManager, DaggerfallBaseWindow previous = null)
@@ -107,6 +123,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             localFilterTextBox = DaggerfallUI.AddTextBoxWithFocus(new Rect(new Vector2(1, 24), new Vector2(47, 8)), "filter pattern", localTargetIconPanel);
             localFilterTextBox.VerticalAlignment = VerticalAlignment.Bottom;
             localFilterTextBox.OnType += LocalFilterTextBox_OnType;
+
             localFilterTextBox.OverridesHotkeySequences = true;
 
             localFilterButton = DaggerfallUI.AddButton(new Rect(40, 25, 15, 8), localTargetIconPanel);
@@ -215,46 +232,46 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     return string.Empty;
                 case EquipSlots.Amulet0:
                 case EquipSlots.Amulet1:
-                    return RegisterInventoryWindow.Amulet;
+                    return Amulet;
                 case EquipSlots.Bracelet0:
                 case EquipSlots.Bracelet1:
-                    return RegisterInventoryWindow.Bracelet;
+                    return Bracelet;
                 case EquipSlots.Bracer0:
                 case EquipSlots.Bracer1:
-                    return RegisterInventoryWindow.Bracer;
+                    return Bracer;
                 case EquipSlots.Ring0:
                 case EquipSlots.Ring1:
-                    return RegisterInventoryWindow.Ring;
+                    return Ring;
                 case EquipSlots.Mark0:
                 case EquipSlots.Mark1:
-                    return RegisterInventoryWindow.Mark;
+                    return Mark;
                 case EquipSlots.Crystal0:
                 case EquipSlots.Crystal1:
-                    return RegisterInventoryWindow.Crystal;
+                    return Crystal;
                 case EquipSlots.Head:
-                    return RegisterInventoryWindow.Head;
+                    return Head;
                 case EquipSlots.RightArm:
-                    return RegisterInventoryWindow.RightArm;
+                    return RightArm;
                 case EquipSlots.LeftArm:
-                    return RegisterInventoryWindow.LeftArm;
+                    return LeftArm;
                 case EquipSlots.Cloak1:
                 case EquipSlots.Cloak2:
-                    return RegisterInventoryWindow.Cloak;
+                    return Cloak;
                 case EquipSlots.ChestClothes:
-                    return RegisterInventoryWindow.ChestClothes;
+                    return ChestClothes;
                 case EquipSlots.ChestArmor:
-                    return RegisterInventoryWindow.ChestArmor;
+                    return ChestArmor;
                 case EquipSlots.RightHand:
                 case EquipSlots.Gloves:
-                    return RegisterInventoryWindow.RightHand;
+                    return RightHand;
                 case EquipSlots.LeftHand:
-                    return RegisterInventoryWindow.LeftHand;
+                    return LeftHand;
                 case EquipSlots.LegsArmor:
-                    return RegisterInventoryWindow.LegsArmor;
+                    return LegsArmor;
                 case EquipSlots.LegsClothes:
-                    return RegisterInventoryWindow.LegsClothes;
+                    return LegsClothes;
                 case EquipSlots.Feet:
-                    return RegisterInventoryWindow.Feet;
+                    return Feet;
                 default:
                     return string.Empty;
             }
@@ -269,11 +286,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
             string str = string.Empty;
             str = GetSearchTags(item);
-
-            if (str != string.Empty)
-            {
-                Debug.Log($"returned {str}");
-            }
 
             if (String.IsNullOrEmpty(filterString))
                 return true;
@@ -300,7 +312,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                             iterationPass = false;
                         else if (itemGroupNames[(int)item.ItemGroup].IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
                             iterationPass = false;
-                        else if (str.IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
+                        else if (str != null && str.IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
                             iterationPass = false;
                     }
                     else
@@ -312,7 +324,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                             iterationPass = true;
                         else if (itemGroupNames[(int)item.ItemGroup].IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
                             iterationPass = true;
-                        else if (str.IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
+                        else if (str != null && str.IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
                                 iterationPass = true;
 
                     }
