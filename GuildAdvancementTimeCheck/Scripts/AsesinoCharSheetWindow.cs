@@ -229,7 +229,13 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             item.text = DaggerfallUnity.Instance.TextProvider.GetSkillName(skill);
             TextFile.Token item2 = default(TextFile.Token);
             item2.formatting = formatting;
-            item2.text = $"{num} / {num2}";
+
+            if (playerEntity.Skills.GetPermanentSkillValue((int)skill) >= 100)
+                item.text = "MASTERED";
+            else if (playerEntity.AlreadyMasteredASkill() && playerEntity.Skills.GetPermanentSkillValue((int)skill) >= 95)
+                item.text = "Maxed";
+            else
+                item2.text = $"{num} / {num2}";
             TextFile.Token item3 = default(TextFile.Token);
             item3.formatting = formatting;
             item3.text = $"{((DaggerfallEntity)playerEntity).Skills.GetLiveSkillValue(skill)}%";
