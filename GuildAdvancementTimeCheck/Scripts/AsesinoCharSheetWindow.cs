@@ -40,11 +40,58 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             ShowReputations();
         }
 
+        protected TextFile.Token HighLightToken(string text)
+        {
+            var token = new TextFile.Token()
+            {
+                text = text,
+                formatting = TextFile.Formatting.TextHighlight
+            };
+            return token;
+        }
         protected override void ShowSkillsDialog(List<DFCareer.Skills> skills, bool twoColumn = false)
         {
             bool secondColumn = false;
             bool showHandToHandDamage = false;
             List<TextFile.Token> tokens = new List<TextFile.Token>();
+
+
+            if (twoColumn)
+            {
+                var tk = new List<TextFile.Token>();
+                tk.Add(HighLightToken("Skill"));
+                tk.Add(TextFile.TabToken);
+                tk.Add(HighLightToken("Next Lvl"));
+                tk.Add(TextFile.TabToken);
+                tk.Add(HighLightToken("   Curr Lvl"));
+                tk.Add(TextFile.TabToken);
+                tk.Add(HighLightToken("  ATR"));
+                tokens.AddRange(tk);
+
+                tk = new List<TextFile.Token>();
+                tk.Add(TextFile.TabToken);
+                tk.Add(HighLightToken("Skill"));
+                tk.Add(TextFile.TabToken);
+                tk.Add(HighLightToken("Next Lvl"));
+                tk.Add(TextFile.TabToken);
+                tk.Add(HighLightToken("Curr Lvl"));
+                tk.Add(TextFile.TabToken);
+                tk.Add(HighLightToken("ATR"));
+                tk.Add(TextFile.NewLineToken);
+                tokens.AddRange(tk);
+            }
+            else
+            {
+                tokens.Add(HighLightToken("Skill"));
+                tokens.Add(TextFile.TabToken);
+                tokens.Add(TextFile.TabToken);
+                tokens.Add(HighLightToken("Next Lvl"));
+                tokens.Add(TextFile.TabToken);
+                tokens.Add(HighLightToken("Curr Lvl"));
+                tokens.Add(TextFile.TabToken);
+                tokens.Add(HighLightToken("ATR"));
+                tokens.Add(TextFile.NewLineToken);
+            }
             for (int i = 0; i < skills.Count; i++)
             {
                 if (!showHandToHandDamage && (skills[i] == DFCareer.Skills.HandToHand))
@@ -218,7 +265,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         private TextFile.Token[] CreateSkillTokens(DFCareer.Skills skill, bool twoColumn = false, int startPosition = 0)
         {
-
             bool skillRecentlyIncreased = playerEntity.GetSkillRecentlyIncreased(skill);
             int num = CurrentTallyCount(skill);
             int num2 = TallysNeededToAdvance(skill);
@@ -230,12 +276,28 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             TextFile.Token item2 = default(TextFile.Token);
             item2.formatting = formatting;
 
-            if (playerEntity.Skills.GetPermanentSkillValue((int)skill) >= 100)
+            if (playerEntity.Skills.GetPermanentSkillValue((int)skill) >= FormulaHelper.MaxStatValue())
                 item.text = "MASTERED";
-            else if (playerEntity.AlreadyMasteredASkill() && playerEntity.Skills.GetPermanentSkillValue((int)skill) >= 95)
+            else if (playerEntity.AlreadyMasteredASkill() && playerEntity.Skills.GetPermanentSkillValue((int)skill) >= FormulaHelper.MaxStatValue()*0.95)
                 item.text = "Maxed";
             else
-                item2.text = $"{num} / {num2}";
+            {
+                if (RegisterCharSheetWindow.showPct)
+                {
+                    var pct = num * 100 / num2;
+                    if (pct >= 100)
+                        item2.text = "Ready";
+                    else
+                        item2.text = $"{pct}%";
+                }
+                else
+                {
+                    if (num >= num2)
+                        item2.text = "Ready";
+                    else
+                        item2.text = string.Format("{0} / {1}", num, num2);
+                }
+            }
             TextFile.Token item3 = default(TextFile.Token);
             item3.formatting = formatting;
             item3.text = $"{((DaggerfallEntity)playerEntity).Skills.GetLiveSkillValue(skill)}%";

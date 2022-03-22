@@ -2,14 +2,24 @@ using UnityEngine;
 using DaggerfallWorkshop.Game;
 using DaggerfallWorkshop.Game.Utility.ModSupport;
 using DaggerfallWorkshop.Game.UserInterfaceWindows;
+using DaggerfallWorkshop.Game.Utility.ModSupport.ModSettings;
+using Mono.CSharp;
 
 public class RegisterCharSheetWindow : MonoBehaviour
 {
     static Mod mod;
+    public static bool showPct = false;
 
     public void Awake()
     {
+        mod.LoadSettingsCallback = LoadSettings;
+        mod.LoadSettings();
         mod.IsReady = true;
+    }
+
+    private void LoadSettings(ModSettings settings, ModSettingsChange change)
+    {
+        showPct = settings.GetValue<bool>("Settings", "ShowPercent");
     }
 
     public void Start()
