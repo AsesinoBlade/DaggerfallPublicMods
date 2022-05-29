@@ -287,6 +287,14 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             string str = string.Empty;
             str = GetSearchTags(item);
 
+            Type itemClassType;
+            if (item.TemplateIndex > ItemHelper.LastDFTemplate)
+                if (GameManager.Instance.ItemHelper.GetCustomItemClass(item.TemplateIndex, out itemClassType) )
+                    if (itemClassType != null)
+                    {
+                        str += " " + itemClassType.ToString();
+                    }
+
             if (String.IsNullOrEmpty(filterString))
                 return true;
 
