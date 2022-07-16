@@ -12,5 +12,6 @@
         "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/Docs/InventoryFilter Readme.txt",
         "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/InventoryFilter.dfmod.json",
         "Assets/Game/Mods/DaggerfallPublicMods/InventoryFilter/modsettings.json"
-    ]
+    ],
+    "ModPreCompile": true
 }
