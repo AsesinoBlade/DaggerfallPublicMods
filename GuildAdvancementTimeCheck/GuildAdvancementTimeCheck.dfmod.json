@@ -6,7 +6,9 @@
     "GUID": "c279df02-0bf6-4fa3-bf68-813960c6ce1a",
     "Files": [
         "Assets/Game/Mods/DaggerfallPublicMods/GuildAdvancementTimeCheck/Scripts/AsesinoCharSheetWindow.cs",
-        "Assets/Game/Mods/DaggerfallPublicMods/GuildAdvancementTimeCheck/Scripts/RegisterCharSheetWindow.cs",
-        "Assets/Game/Mods/DaggerfallPublicMods/GuildAdvancementTimeCheck/modsettings.json"
-    ]
+        "Assets/Game/Mods/DaggerfallPublicMods/GuildAdvancementTimeCheck/modsettings.json",
+        "Assets/Game/Mods/DaggerfallPublicMods/GuildAdvancementTimeCheck/Scripts/ViewableSkillProgressMain.cs",
+        "Assets/Game/Mods/DaggerfallPublicMods/GuildAdvancementTimeCheck/Scripts/VSPCharacterSheetOverride.cs"
+    ],
+    "ModPreCompile": false
 }
