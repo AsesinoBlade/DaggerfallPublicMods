@@ -10,5 +10,5 @@
         "Assets/Game/Mods/DaggerfallPublicMods/GuildAdvancementTimeCheck/Scripts/ViewableSkillProgressMain.cs",
         "Assets/Game/Mods/DaggerfallPublicMods/GuildAdvancementTimeCheck/Scripts/VSPCharacterSheetOverride.cs"
     ],
-    "ModPreCompile": false
+    "ModPreCompile": true
 }

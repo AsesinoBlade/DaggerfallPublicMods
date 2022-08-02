@@ -25,23 +25,23 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         #endregion
 
-        public int CurrentTallyCount(DFCareer.Skills skill)
+        public static new int CurrentTallyCount(DFCareer.Skills skill)
         {
             int i = (int)skill;
 
-            int reflexesMod = 0x10000 - (((int)playerEntity.Reflexes - 2) << 13);
-            int calculatedSkillUses = (playerEntity.SkillUses[i] * reflexesMod) >> 16;
+            int reflexesMod = 0x10000 - (((int)GameManager.Instance.PlayerEntity.Reflexes - 2) << 13);
+            int calculatedSkillUses = (GameManager.Instance.PlayerEntity.SkillUses[i] * reflexesMod) >> 16;
 
             return calculatedSkillUses;
         }
 
-        public int TallysNeededToAdvance(DFCareer.Skills skill)
+        public static new int TallysNeededToAdvance(DFCareer.Skills skill)
         {
             int i = (int)skill;
 
             int skillAdvancementMultiplier = DaggerfallSkills.GetAdvancementMultiplier((DFCareer.Skills)i);
-            float careerAdvancementMultiplier = playerEntity.Career.AdvancementMultiplier;
-            int usesNeededForAdvancement = FormulaHelper.CalculateSkillUsesForAdvancement(playerEntity.Skills.GetPermanentSkillValue(i), skillAdvancementMultiplier, careerAdvancementMultiplier, playerEntity.Level);
+            float careerAdvancementMultiplier = GameManager.Instance.PlayerEntity.Career.AdvancementMultiplier;
+            int usesNeededForAdvancement = FormulaHelper.CalculateSkillUsesForAdvancement(GameManager.Instance.PlayerEntity.Skills.GetPermanentSkillValue(i), skillAdvancementMultiplier, careerAdvancementMultiplier, GameManager.Instance.PlayerEntity.Level);
 
             return usesNeededForAdvancement;
         }
@@ -204,7 +204,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 float aT = TallysNeededToAdvance(skills[i]);
                 float sT = cT; // Just here to make the "For Nerds" text display option cleaner to implement in this code.
                 if (cT > aT)
-                    cT = aT; // Continue work on this tomorrow, get the non-SDF stuff to work and then should be all good, if I don't plan to do the other feature as well at least.
+                    cT = aT;
 
                 if (!twoColumn)
                 {
@@ -362,126 +362,5 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 }
             }
         }
-
-        /*protected override void ShowSkillsDialog(List<DFCareer.Skills> skills, bool twoColumn = false)
-        {
-            bool secondColumn = false;
-            bool showHandToHandDamage = false;
-            List<TextFile.Token> tokens = new List<TextFile.Token>();
-            for (int i = 0; i < skills.Count; i++)
-            {
-                if (!showHandToHandDamage && (skills[i] == DFCareer.Skills.HandToHand))
-                    showHandToHandDamage = true;
-                if (!twoColumn)
-                {
-                    tokens.AddRange(CreateSkillTokens(skills[i]));
-                    if (i < skills.Count - 1)
-                        tokens.Add(TextFile.NewLineToken);
-                }
-                else
-                {
-                    if (!secondColumn)
-                    {
-                        tokens.AddRange(CreateSkillTokens(skills[i], true));
-                        secondColumn = !secondColumn;
-                    }
-                    else
-                    {
-                        tokens.AddRange(CreateSkillTokens(skills[i], true, 136));
-                        secondColumn = !secondColumn;
-                        if (i < skills.Count - 1)
-                            tokens.Add(TextFile.NewLineToken);
-                    }
-                }
-            }
-            if (showHandToHandDamage)
-            {
-                tokens.Add(TextFile.NewLineToken);
-                TextFile.Token HandToHandDamageToken = new TextFile.Token();
-                int minDamage = FormulaHelper.CalculateHandToHandMinDamage(playerEntity.Skills.GetLiveSkillValue(DFCareer.Skills.HandToHand));
-                int maxDamage = FormulaHelper.CalculateHandToHandMaxDamage(playerEntity.Skills.GetLiveSkillValue(DFCareer.Skills.HandToHand));
-                HandToHandDamageToken.text = DaggerfallUnity.Instance.TextProvider.GetSkillName(DFCareer.Skills.HandToHand) + " dmg: " + minDamage + "-" + maxDamage;
-                HandToHandDamageToken.formatting = TextFile.Formatting.Text;
-                tokens.Add(HandToHandDamageToken);
-            }
-            DaggerfallMessageBox messageBox = new DaggerfallMessageBox(uiManager, this);
-            messageBox.SetHighlightColor(DaggerfallUI.DaggerfallUnityStatIncreasedTextColor);
-            messageBox.SetTextTokens(tokens.ToArray(), null, false);
-            messageBox.ClickAnywhereToClose = true;
-            messageBox.Show();
-            messageBox.ImagePanel.VerticalAlignment = VerticalAlignment.None;
-            messageBox.ImagePanel.HorizontalAlignment = HorizontalAlignment.None;
-            messageBox.ImagePanel.Position = new Vector2(0, 0);
-            int repeatLimit = 12;
-            if (twoColumn) { repeatLimit = 23; }
-            for (int i = 0; i < repeatLimit; i++)
-            {
-                if (i < 12) // For first column
-                {
-                    Panel pan = DaggerfallUI.AddPanel(new Rect(50, 10 + i * 7, 30, 5), messageBox.ImagePanel);
-                    Panel bar = DaggerfallUI.AddPanel(new Rect(1, 0, 15, 5), pan);
-                    bar.BackgroundColor = new Color(0.6f, 0, 0); //dark red
-                    Outline panBorder = DaggerfallUI.AddOutline(new Rect(0, 0, 30, 5), Color.yellow, pan);
-                }
-                else // For second column
-                {
-                    Panel pan = DaggerfallUI.AddPanel(new Rect(190, 10 + (i - 12) * 7, 30, 5), messageBox.ImagePanel);
-                    Panel bar = DaggerfallUI.AddPanel(new Rect(1, 0, 15, 5), pan);
-                    bar.BackgroundColor = new Color(0.6f, 0, 0); //dark red
-                    Outline panBorder = DaggerfallUI.AddOutline(new Rect(0, 0, 30, 5), Color.yellow, pan);
-                }
-            }
-        }*/
-
-        /*protected override void ShowSkillsDialog(List<DFCareer.Skills> skills, bool twoColumn = false)
-        {
-            bool secondColumn = false;
-            bool showHandToHandDamage = false;
-            List<TextFile.Token> tokens = new List<TextFile.Token>();
-            int secondColumnStartPos = 120;
-            if (!DaggerfallUnity.Settings.SDFFontRendering) // For when the original Daggerfall font is being used (I.E. the less smooth looking "retro" font.)
-                secondColumnStartPos = 180;
-            for (int i = 0; i < skills.Count; i++)
-            {
-                if (!showHandToHandDamage && (skills[i] == DFCareer.Skills.HandToHand))
-                    showHandToHandDamage = true;
-                if (!twoColumn)
-                {
-                    tokens.AddRange(CreateSkillTokens(skills[i]));
-                    if (i < skills.Count - 1)
-                        tokens.Add(TextFile.NewLineToken);
-                }
-                else
-                {
-                    if (!secondColumn)
-                    {
-                        tokens.AddRange(CreateSkillTokens(skills[i], true));
-                        secondColumn = !secondColumn;
-                    }
-                    else
-                    {
-                        tokens.AddRange(CreateSkillTokens(skills[i], true, secondColumnStartPos));
-                        secondColumn = !secondColumn;
-                        if (i < skills.Count - 1)
-                            tokens.Add(TextFile.NewLineToken);
-                    }
-                }
-            }
-            if (showHandToHandDamage)
-            {
-                tokens.Add(TextFile.NewLineToken);
-                TextFile.Token HandToHandDamageToken = new TextFile.Token();
-                int minDamage = FormulaHelper.CalculateHandToHandMinDamage(playerEntity.Skills.GetLiveSkillValue(DFCareer.Skills.HandToHand));
-                int maxDamage = FormulaHelper.CalculateHandToHandMaxDamage(playerEntity.Skills.GetLiveSkillValue(DFCareer.Skills.HandToHand));
-                HandToHandDamageToken.text = DaggerfallUnity.Instance.TextProvider.GetSkillName(DFCareer.Skills.HandToHand) + " dmg: " + minDamage + "-" + maxDamage;
-                HandToHandDamageToken.formatting = TextFile.Formatting.Text;
-                tokens.Add(HandToHandDamageToken);
-            }
-            DaggerfallMessageBox messageBox = new DaggerfallMessageBox(uiManager, this);
-            messageBox.SetHighlightColor(DaggerfallUI.DaggerfallUnityStatIncreasedTextColor);
-            messageBox.SetTextTokens(tokens.ToArray(), null, false);
-            messageBox.ClickAnywhereToClose = true;
-            messageBox.Show();
-        }*/
     }
 }
