@@ -19,6 +19,16 @@ public class RegisterInventoryWindow : MonoBehaviour
 
     private void LoadSettings(ModSettings settings, ModSettingsChange change)
     {
+        AsesinoInventoryWindow.SplitTabsOnLootDrops = settings.GetValue<bool>("TabSettings", "SplitTabsOnLootDrops");
+        AsesinoInventoryWindow.SplitTabsOnWagon = settings.GetValue<bool>("TabSettings", "SplitTabsOnWagon");
+        AsesinoTradeWindow.CheckGeneralStore = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckGeneralStore");
+        AsesinoTradeWindow.CheckPawnShops = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckPawnShops");
+        AsesinoTradeWindow.CheckArmorer = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckArmorer");
+        AsesinoTradeWindow.CheckWeaponShop = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckWeaponShop");
+        AsesinoTradeWindow.CheckAlchemist = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckAlchemist");
+        AsesinoTradeWindow.CheckClothingStore = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckClothingStore");
+        AsesinoTradeWindow.CheckBookStore = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckBookStore");
+        AsesinoTradeWindow.CheckGemStore = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckGemStore");
         AsesinoInventoryWindow.Amulet = settings.GetString("SearchTags", "Amulet");
         AsesinoInventoryWindow.Bracelet = settings.GetString("SearchTags", "Bracelet");
         AsesinoInventoryWindow.Bracer = settings.GetString("SearchTags", "Bracer");

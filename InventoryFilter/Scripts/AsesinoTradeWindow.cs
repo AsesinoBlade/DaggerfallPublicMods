@@ -35,6 +35,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected static Button localFilterButton;
         protected static TextBox localFilterTextBox;
         protected static string filterString = null;
+
         protected static string[] itemGroupNames = new string[]
         {
             "drugs",
@@ -68,6 +69,16 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             "currency"
         };
 
+        public static bool CheckGeneralStore { get; set; }
+        public static bool CheckPawnShops { get; set; }
+        public static bool CheckArmorer { get; set; }
+        public static bool CheckWeaponShop { get; set; }
+        public static bool CheckAlchemist { get; set; }
+        public static bool CheckClothingStore { get; set; }
+        public static bool CheckBookStore { get; set; }
+        public static bool CheckGemStore { get; set; }
+
+
         #region Constructors
 
         public AsesinoTradeWindow(IUserInterfaceManager uiManager, DaggerfallBaseWindow previous, WindowModes windowMode, IGuild guild)
@@ -92,7 +103,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             SetupTargetIconPanelFilterBox();
         }
 
-        protected  void SetupTargetIconPanelFilterBox()
+        protected  virtual void SetupTargetIconPanelFilterBox()
         {
             string toolTipText = string.Empty;
             toolTipText = "Press Filter Button to Open Filter Text Box.\rAnything typed into text box will autofilter.\rFor negative filter, type '-' in front.\rFor example, -steel weapon will find all weapons not made of steel.";
@@ -149,10 +160,10 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 filterButtonNeedUpdate = false;
                 UpdateFilterButton();
             }
-       }
+        }
 
 
-        protected new void SelectTabPage(TabPages tabPage)
+        protected override void SelectTabPage(TabPages tabPage)
         {
             // Select new tab page
             base.SelectTabPage(tabPage);
@@ -231,22 +242,115 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 UpdateRepairTimes(false);
             }
             else
-                FilterRemoteItemsWithoutExtraFilter();
+                FilterRemoteItemsWithoutRepair();
         }
 
-        protected  void FilterRemoteItemsWithoutExtraFilter()
+
+        protected  void FilterRemoteItemsWithoutRepair()
         {
+            DaggerfallUnityItem item;
             // Clear current references
             remoteItemsFiltered.Clear();
 
             // Add items to list
             if (remoteItems != null)
                 for (int i = 0; i < remoteItems.Count; i++)
-                    if (ItemPassesFilter(remoteItems.GetItem(i)))
-                        remoteItemsFiltered.Add(remoteItems.GetItem(i));
+                {
+
+                    item = remoteItems.GetItem(i);
+                    if (ItemPassesFilter(item) && TabPassesFilter(item))
+                        remoteItemsFiltered.Add(item);
+                }
         }
-        
-        protected bool ItemPassesFilter(DaggerfallUnityItem item)
+
+        bool TabPassesFilter(DaggerfallUnityItem item)
+        {
+            bool isWeaponOrArmor = (item.ItemGroup == ItemGroups.Weapons || item.ItemGroup == ItemGroups.Armor);
+
+            if (WindowMode == WindowModes.Sell || WindowMode == WindowModes.SellMagic)
+                return true;
+
+            var buildingType = GameManager.Instance.PlayerEnterExit.BuildingType;
+
+            switch (buildingType)
+            {
+                case DFLocation.BuildingTypes.GeneralStore:
+                    if (!AsesinoTradeWindow.CheckGeneralStore)
+                        return true;
+                    break;
+                case DFLocation.BuildingTypes.PawnShop:
+                    if (!AsesinoTradeWindow.CheckPawnShops)
+                        return true;
+                    break;
+                case DFLocation.BuildingTypes.Armorer:
+                    if (!AsesinoTradeWindow.CheckArmorer)
+                        return true;
+                    break;
+                case DFLocation.BuildingTypes.WeaponSmith:
+                    if (!AsesinoTradeWindow.CheckWeaponShop)
+                        return true;
+                    break;
+                case DFLocation.BuildingTypes.Bookseller:
+                    if (!AsesinoTradeWindow.CheckBookStore)
+                        return true;
+                    break;
+                case DFLocation.BuildingTypes.Alchemist:
+                    if (!AsesinoTradeWindow.CheckAlchemist)
+                        return true;
+                    break;
+                case DFLocation.BuildingTypes.ClothingStore:
+                    if (!AsesinoTradeWindow.CheckClothingStore)
+                        return true;
+                    break;
+                case DFLocation.BuildingTypes.GemStore:
+                    if (!AsesinoTradeWindow.CheckGemStore)
+                        return true;
+                    break;
+                default:
+                    return true;
+            }
+
+            // Add based on view
+            if (selectedTabPage == TabPages.WeaponsAndArmor)
+            {
+                // Weapons and armor
+                if (isWeaponOrArmor && !item.IsEnchanted)
+                    return true;
+                else
+                    return false;
+            }
+            else if (selectedTabPage == TabPages.MagicItems)
+            {
+                // Enchanted items
+                if (item.IsEnchanted || item.IsOfTemplate((int)MiscItems.Spellbook))
+                    return true;
+                else
+                    return false;
+            }
+            else if (selectedTabPage == TabPages.Ingredients)
+            {
+                // Ingredients
+                if (item.IsIngredient && !item.IsEnchanted)
+                    return true;
+                else
+                    return false;
+            }
+            else if (selectedTabPage == TabPages.ClothingAndMisc)
+            {
+                // Everything else
+                if (!isWeaponOrArmor && !item.IsEnchanted && !item.IsIngredient &&
+                    !item.IsOfTemplate((int)MiscItems.Spellbook))
+                    return true;
+                else
+                    return false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        protected virtual bool ItemPassesFilter(DaggerfallUnityItem item)
         {
             bool iterationPass = false;
 

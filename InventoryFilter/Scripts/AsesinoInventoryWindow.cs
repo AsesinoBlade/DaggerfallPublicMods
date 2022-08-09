@@ -86,7 +86,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         public static string LegsArmor { get;  set; }
         public static string LegsClothes { get;  set; }
         public static string Feet { get;  set; }
-
+        public static bool SplitTabsOnLootDrops { get; set; }
+        public static bool SplitTabsOnWagon { get; set; }
 
         public AsesinoInventoryWindow(IUserInterfaceManager uiManager, DaggerfallBaseWindow previous = null)
             : base(uiManager, previous)
@@ -157,7 +158,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             base.OnPop();
         }
 
-        protected new void SelectTabPage(TabPages tabPage)
+        protected override void SelectTabPage(TabPages tabPage)
         {
             // Select new tab page
             base.SelectTabPage(tabPage);
@@ -218,9 +219,59 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 {
 
                     item = remoteItems.GetItem(i);
-                    if (ItemPassesFilter(item))
+                    if (ItemPassesFilter(item) && TabPassesFilter(item))
                         remoteItemsFiltered.Add(item);
                 }
+        }
+
+        bool TabPassesFilter(DaggerfallUnityItem item )
+        {
+            bool isWeaponOrArmor = (item.ItemGroup == ItemGroups.Weapons || item.ItemGroup == ItemGroups.Armor);
+
+            if (usingWagon && !AsesinoInventoryWindow.SplitTabsOnWagon)
+                return true;
+
+            if (!usingWagon && !AsesinoInventoryWindow.SplitTabsOnLootDrops)
+                return true;
+
+            // Add based on view
+            if (selectedTabPage == TabPages.WeaponsAndArmor)
+            {
+                // Weapons and armor
+                if (isWeaponOrArmor && !item.IsEnchanted)
+                    return true;
+                else
+                    return false;
+            }
+            else if (selectedTabPage == TabPages.MagicItems)
+            {
+                // Enchanted items
+                if (item.IsEnchanted || item.IsOfTemplate((int) MiscItems.Spellbook))
+                    return true;
+                else
+                    return false;
+            }
+            else if (selectedTabPage == TabPages.Ingredients)
+            {
+                // Ingredients
+                if (item.IsIngredient && !item.IsEnchanted)
+                    return true;
+                else
+                    return false;
+            }
+            else if (selectedTabPage == TabPages.ClothingAndMisc)
+            {
+                // Everything else
+                if (!isWeaponOrArmor && !item.IsEnchanted && !item.IsIngredient &&
+                    !item.IsOfTemplate((int) MiscItems.Spellbook))
+                    return true;
+                else
+                    return false;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         protected string GetSearchTags(DaggerfallUnityItem item)
