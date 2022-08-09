@@ -246,7 +246,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         }
 
 
-        protected  void FilterRemoteItemsWithoutRepair()
+        protected virtual void FilterRemoteItemsWithoutRepair()
         {
             DaggerfallUnityItem item;
             // Clear current references
@@ -263,7 +263,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 }
         }
 
-        bool TabPassesFilter(DaggerfallUnityItem item)
+        protected bool TabPassesFilter(DaggerfallUnityItem item)
         {
             bool isWeaponOrArmor = (item.ItemGroup == ItemGroups.Weapons || item.ItemGroup == ItemGroups.Armor);
 
