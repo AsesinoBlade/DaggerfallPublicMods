@@ -11,6 +11,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DaggerfallConnect;
 using DaggerfallConnect.Arena2;
 using DaggerfallConnect.Utility;
@@ -70,89 +71,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             "currency"
         };
 
-        protected class ItemComparer : IComparer<DaggerfallUnityItem>
-        {
-            public int Compare(DaggerfallUnityItem i1, DaggerfallUnityItem i2)
-            {
-                switch (SortCriteria)
-                {
-                    case 2: // by weight descending
-                        {
-                            if (i1 == null)
-                            {
-                                if (i2 == null)
-                                    return 0;
-                                else
-                                    return 1;
-                            }
-                            else
-                            {
-                                if (i2 == null)
-                                    return -1;
-                                else
-                                    return i2.weightInKg.CompareTo(i1.weightInKg);
-                            }
-                        }
-                    case 3: // by value
-                        {
-                            if (i1 == null)
-                            {
-                                if (i2 == null)
-                                    return 0;
-                                else
-                                    return 1;
-                            }
-                            else
-                            {
-                                if (i2 == null)
-                                    return -1;
-                                else
-                                    return i2.value.CompareTo(i1.value);
-                            }
-                        }
-                    case 4: // by worth -- value / weight (this shows you what gives you the biggest return for the lowest weight
-                        {
-                            if (i1 == null)
-                            {
-                                if (i2 == null)
-                                    return 0;
-                                else
-                                    return 1;
-                            }
-                            else
-                            {
-                                if (i2 == null)
-                                    return -1;
-                                else
-                                {
-                                    var w1 = i1.value / (i1.weightInKg == 0 ? 1 : i1.weightInKg);
-                                    var w2 = i2.value / (i2.weightInKg == 0 ? 1 : i2.weightInKg);
-                                    return w2.CompareTo(w1);
-                                }
-                            }
-                        }
-                    default: //sort = 1 - alphabetical on long name
-                        {
-                            if (i1 == null)
-                            {
-                                if (i2 == null)
-                                    return 0;
-                                else
-                                    return -1;
-                            }
-                            else
-                            {
-                                if (i2 == null)
-                                    return 1;
-                                else
-                                    return String.Compare(i1.LongName, i2.LongName, StringComparison.Ordinal);
-                            }
-
-                        }
-                }
-            }
-        }
-
         public static bool ClearFilter { get; set; }
         public static int SortCriteria { get; set; }
         public static bool CheckGeneralStore { get; set; }
@@ -167,7 +85,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
         #region Constructors
 
-        public AsesinoTradeWindow(IUserInterfaceManager uiManager, DaggerfallBaseWindow previous, WindowModes windowMode, IGuild guild)
+        public AsesinoTradeWindow(IUserInterfaceManager uiManager, DaggerfallBaseWindow previous,
+            WindowModes windowMode, IGuild guild)
             : base(uiManager, previous, windowMode, guild)
         {
 
@@ -190,13 +109,15 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             SetupTargetIconPanelFilterBox();
         }
 
-        protected  virtual void SetupTargetIconPanelFilterBox()
+        protected virtual void SetupTargetIconPanelFilterBox()
         {
             string toolTipText = string.Empty;
-            toolTipText = "Press Filter Button to Open Filter Text Box.\rAnything typed into text box will autofilter.\rFor negative filter, type '-' in front.\rFor example, -steel weapon will find all weapons not made of steel.";
+            toolTipText =
+                "Press Filter Button to Open Filter Text Box.\rAnything typed into text box will autofilter.\rFor negative filter, type '-' in front.\rFor example, -steel weapon will find all weapons not made of steel.";
 
 
-            localFilterTextBox = DaggerfallUI.AddTextBoxWithFocus(new Rect(new Vector2(1, 24), new Vector2(47, 8)), "filter pattern", localTargetIconPanel);
+            localFilterTextBox = DaggerfallUI.AddTextBoxWithFocus(new Rect(new Vector2(1, 24), new Vector2(47, 8)),
+                "filter pattern", localTargetIconPanel);
             localFilterTextBox.VerticalAlignment = VerticalAlignment.Bottom;
             localFilterTextBox.OnType += LocalFilterTextBox_OnType;
             localFilterTextBox.OverridesHotkeySequences = true;
@@ -293,7 +214,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             FilterRemoteItems();
             remoteItemListScroller.Items = remoteItemsFiltered;
         }
-        
+
         protected override void FilterLocalItems()
         {
             localItemsFiltered.Clear();
@@ -338,8 +259,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
                     }
                 }
+
                 if (localItemsFiltered.Count > 0)
-                    localItemsFiltered.Sort(new ItemComparer());
+                    AsesinoInventoryWindow.SortMe(ref localItemsFiltered);
             }
         }
 
@@ -386,8 +308,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                         remoteItemsFiltered.Add(item);
                 }
             }
-            if (remoteItemsFiltered.Count > 0 )
-                remoteItemsFiltered.Sort(new ItemComparer());
+
+            if (remoteItemsFiltered.Count > 0)
+                AsesinoInventoryWindow.SortMe(ref remoteItemsFiltered);
         }
 
         protected bool TabPassesFilter(DaggerfallUnityItem item)

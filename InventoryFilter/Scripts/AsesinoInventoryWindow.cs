@@ -72,88 +72,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             "currency"
         };
 
-        private class ItemComparer : IComparer<DaggerfallUnityItem>
-        {
-            public int Compare(DaggerfallUnityItem i1, DaggerfallUnityItem i2)
-            {
-                switch (SortCriteria)
-                {
-                    case 2: // by weight descending
-                    {
-                        if (i1 == null)
-                        {
-                            if (i2 == null)
-                                return 0;
-                            else
-                                return 1;
-                        }
-                        else
-                        {
-                            if (i2 == null)
-                                return -1;
-                            else
-                                return i2.weightInKg.CompareTo(i1.weightInKg);
-                        }
-                    }
-                    case 3: // by value
-                    {
-                        if (i1 == null)
-                        {
-                            if (i2 == null)
-                                return 0;
-                            else
-                                return 1;
-                        }
-                        else
-                        {
-                            if (i2 == null)
-                                return -1;
-                            else
-                                return i2.value.CompareTo(i1.value);
-                        }
-                    }
-                    case 4: // by worth -- value / weight (this shows you what gives you the biggest return for the lowest weight
-                    {
-                        if (i1 == null)
-                        {
-                            if (i2 == null)
-                                return 0;
-                            else
-                                return 1;
-                        }
-                        else
-                        {
-                            if (i2 == null)
-                                return -1;
-                            else
-                            {
-                                var w1 = i1.value / (i1.weightInKg == 0 ? 1 : i1.weightInKg);
-                                var w2 = i2.value / (i2.weightInKg == 0 ? 1 : i2.weightInKg);
-                                return w2.CompareTo(w1);
-                            }
-                        }
-                    }
-                    default: //sort = 1 - alphabetical on long name
-                    {
-                        if (i1 == null)
-                        {
-                            if (i2 == null)
-                                return 0;
-                            else
-                                return -1;
-                        }
-                        else
-                        {
-                            if (i2 == null)
-                                return 1;
-                            else
-                                return String.Compare(i1.LongName, i2.LongName, StringComparison.Ordinal);
-                        }
-                        
-                    }
-                }
-            }
-        }
         public static bool ClearFilter { get; set; }
         public static int SortCriteria { get; set; }
 
@@ -308,7 +226,26 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     localCloseFilterButton.Enabled = false;
                 }
         }
+        public static bool SortMe(ref List<DaggerfallUnityItem> sortList)
+        {
 
+            switch (SortCriteria)
+            {
+                case 2:
+                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenByDescending(x => x.weightInKg).ToList();
+                    return true;
+                case 3:
+                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenByDescending(x => x.value).ToList();
+                    return true;
+                case 4:
+                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenByDescending(x => x.value / (x.weightInKg == 0 ? 1 : x.weightInKg)).ToList();
+                    return true;
+                default:
+                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenBy(x => x.LongName).ToList();
+                    return true;
+            }
+
+        }
         protected override void FilterLocalItems()
         {
             // Clear current references
@@ -328,8 +265,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     }
 
                 }
+
                 if (localItemsFiltered.Count > 0)
-                    localItemsFiltered.Sort(new ItemComparer());
+                    SortMe(ref localItemsFiltered);
             }
         }
 
@@ -348,8 +286,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     if (ItemPassesFilter(item) && TabPassesFilter(item))
                         remoteItemsFiltered.Add(item);
                 }
+
             if (remoteItemsFiltered.Count > 0)
-                remoteItemsFiltered.Sort(new ItemComparer());
+                SortMe(ref remoteItemsFiltered);
         }
 
         bool TabPassesFilter(DaggerfallUnityItem item )
