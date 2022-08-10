@@ -22,8 +22,11 @@ using DaggerfallWorkshop.Game.Utility;
 using DaggerfallWorkshop.Game.Questing;
 using DaggerfallWorkshop.Game.Banking;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using DaggerfallConnect;
 using DaggerfallWorkshop.Game.Formulas;
+using DaggerfallWorkshop.Game.MagicAndEffects;
+using Mono.CSharp.Linq;
 
 
 namespace DaggerfallWorkshop.Game.UserInterfaceWindows
@@ -33,6 +36,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected Button localCloseFilterButton;
         protected bool filterButtonNeedUpdate;
         protected static Button localFilterButton;
+        protected static Button localSortButton;
         protected static TextBox localFilterTextBox;
         protected static string filterString = null;
         protected static string[] itemGroupNames = new string[]
@@ -68,6 +72,90 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             "currency"
         };
 
+        private class ItemComparer : IComparer<DaggerfallUnityItem>
+        {
+            public int Compare(DaggerfallUnityItem i1, DaggerfallUnityItem i2)
+            {
+                switch (SortCriteria)
+                {
+                    case 2: // by weight descending
+                    {
+                        if (i1 == null)
+                        {
+                            if (i2 == null)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                        else
+                        {
+                            if (i2 == null)
+                                return -1;
+                            else
+                                return i2.weightInKg.CompareTo(i1.weightInKg);
+                        }
+                    }
+                    case 3: // by value
+                    {
+                        if (i1 == null)
+                        {
+                            if (i2 == null)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                        else
+                        {
+                            if (i2 == null)
+                                return -1;
+                            else
+                                return i2.value.CompareTo(i1.value);
+                        }
+                    }
+                    case 4: // by worth -- value / weight (this shows you what gives you the biggest return for the lowest weight
+                    {
+                        if (i1 == null)
+                        {
+                            if (i2 == null)
+                                return 0;
+                            else
+                                return 1;
+                        }
+                        else
+                        {
+                            if (i2 == null)
+                                return -1;
+                            else
+                            {
+                                var w1 = i1.value / (i1.weightInKg == 0 ? 1 : i1.weightInKg);
+                                var w2 = i2.value / (i2.weightInKg == 0 ? 1 : i2.weightInKg);
+                                return w2.CompareTo(w1);
+                            }
+                        }
+                    }
+                    default: //sort = 1 - alphabetical on long name
+                    {
+                        if (i1 == null)
+                        {
+                            if (i2 == null)
+                                return 0;
+                            else
+                                return -1;
+                        }
+                        else
+                        {
+                            if (i2 == null)
+                                return 1;
+                            else
+                                return String.Compare(i1.LongName, i2.LongName, StringComparison.Ordinal);
+                        }
+                        
+                    }
+                }
+            }
+        }
+        public static bool ClearFilter { get; set; }
+        public static int SortCriteria { get; set; }
 
         public static string Amulet { get;  set; }
         public static string Bracelet { get;  set; }
@@ -98,6 +186,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected override void Setup()
         {
             base.Setup();
+            ClearFilter = true;
             SetupTargetIconPanelFilterBox();
         }
 
@@ -148,9 +237,42 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             localCloseFilterButton.BackgroundColor = new Color(0.5f, 0.5f, 0.5f, 0.75f);
             localCloseFilterButton.OnMouseClick += LocalCloseFilterButton_OnMouseClick;
 
+            localSortButton = DaggerfallUI.AddButton(new Rect(47, 10, 32, 8), localTargetIconPanel);
+            localSortButton.Label.TextScale = 0.75f;
+            localSortButton.VerticalAlignment = VerticalAlignment.Middle;
+            localSortButton.HorizontalAlignment = HorizontalAlignment.Left;
+            localSortButton.Label.ShadowColor = Color.black;
+            localSortButton.BackgroundColor = new Color(0.5f, 0.5f, 0.5f, 0.75f);
+            SortCriteria = 1;
+            localSortButton.OnMouseClick += LocalSortButton_OnMouseClick;
+            localSortButton.Label.Text = "By Name";
+
             filterButtonNeedUpdate = true;
         }
 
+        void SetLocalSortButton(int val)
+        {
+            switch (val)
+            {
+                case 2:
+                    localSortButton.Label.Text = "By Weight";
+                    break;
+                case 3:
+                    localSortButton.Label.Text = "By Value";
+                    break;
+                case 4:
+                    localSortButton.Label.Text = "By Value/Kg";
+                    break;
+                default:
+                    localSortButton.Label.Text = "By Name";
+                    break;
+            }
+
+            ClearFilter = false;
+            SelectTabPage(selectedTabPage);
+            ClearFilter = true;
+            return;
+        }
 
         public override void OnPop()
         {
@@ -163,7 +285,9 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             // Select new tab page
             base.SelectTabPage(tabPage);
 
-            ClearFilterFields();
+            if (ClearFilter)
+                ClearFilterFields();
+
             FilterRemoteItems();
             remoteItemListScroller.Items = remoteItemsFiltered;
         }
@@ -204,6 +328,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     }
 
                 }
+                if (localItemsFiltered.Count > 0)
+                    localItemsFiltered.Sort(new ItemComparer());
             }
         }
 
@@ -222,6 +348,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     if (ItemPassesFilter(item) && TabPassesFilter(item))
                         remoteItemsFiltered.Add(item);
                 }
+            if (remoteItemsFiltered.Count > 0)
+                remoteItemsFiltered.Sort(new ItemComparer());
         }
 
         bool TabPassesFilter(DaggerfallUnityItem item )
@@ -417,6 +545,16 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             Refresh(false);
             SetFocus(null);
             filterButtonNeedUpdate = true;
+        }
+
+        private void LocalSortButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
+        {
+            SortCriteria += 1;
+            if (SortCriteria > 4)
+                SortCriteria = 1;
+
+            SetLocalSortButton(SortCriteria);
+            return;
         }
 
         private void LocalFilterTextBox_OnType()
