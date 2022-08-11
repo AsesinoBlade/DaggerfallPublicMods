@@ -226,7 +226,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     localCloseFilterButton.Enabled = false;
                 }
         }
-        public static bool SortMe(ref List<DaggerfallUnityItem> sortList)
+        protected static bool SortMe(ref List<DaggerfallUnityItem> sortList)
         {
 
             switch (SortCriteria)

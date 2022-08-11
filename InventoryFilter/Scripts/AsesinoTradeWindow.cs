@@ -245,7 +245,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                             (WindowMode == WindowModes.Sell && ItemTypesAccepted.Contains(item.ItemGroup)) ||
                             (WindowMode == WindowModes.SellMagic && item.IsEnchanted)))
                     {
-                        if (ItemPassesFilter(item))
+                        if (ItemPassesFilter(item) && TabPassesFilter(item))
                             AddLocalItem(item);
                     }
                     else
@@ -253,7 +253,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                         if(GameManager.Instance.PlayerEnterExit.BuildingType == DaggerfallConnect.DFLocation.BuildingTypes.Alchemist &&
                            item.LongName.ToLower().Contains("potion"))
                         {
-                            if (ItemPassesFilter(item))
+                            if (ItemPassesFilter(item) && TabPassesFilter(item))
                                 AddLocalItem(item);
                         }
 
@@ -261,7 +261,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 }
 
                 if (localItemsFiltered.Count > 0)
-                    AsesinoInventoryWindow.SortMe(ref localItemsFiltered);
+                    SortMe(ref localItemsFiltered);
             }
         }
 
@@ -310,7 +310,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             }
 
             if (remoteItemsFiltered.Count > 0)
-                AsesinoInventoryWindow.SortMe(ref remoteItemsFiltered);
+                SortMe(ref remoteItemsFiltered);
         }
 
         protected bool TabPassesFilter(DaggerfallUnityItem item)
@@ -436,7 +436,27 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 
             return true;
         }
-        
+
+        protected static bool SortMe(ref List<DaggerfallUnityItem> sortList)
+        {
+
+            switch (SortCriteria)
+            {
+                case 2:
+                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenByDescending(x => x.weightInKg).ToList();
+                    return true;
+                case 3:
+                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenByDescending(x => x.value).ToList();
+                    return true;
+                case 4:
+                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenByDescending(x => x.value / (x.weightInKg == 0 ? 1 : x.weightInKg)).ToList();
+                    return true;
+                default:
+                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenBy(x => x.LongName).ToList();
+                    return true;
+            }
+
+        }
 
         private void UpdateFilterButton()
         {
@@ -477,7 +497,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         private void LocalSortButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
         {
             SortCriteria += 1;
-            if (SortCriteria > 4)
+            if (SortCriteria > 4 || SortCriteria < 1)
                 SortCriteria = 1;
 
             SetLocalSortButton(SortCriteria);
