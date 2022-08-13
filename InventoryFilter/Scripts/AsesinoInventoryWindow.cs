@@ -95,6 +95,8 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         public static bool SplitTabsOnLootDrops { get; set; }
         public static bool SplitTabsOnWagon { get; set; }
 
+        protected Color UnIdentifiedItemBackgroundColor = new Color(0.05f, 0.05f, 1f, 0.5f);
+
         public AsesinoInventoryWindow(IUserInterfaceManager uiManager, DaggerfallBaseWindow previous = null)
             : base(uiManager, previous)
         {
@@ -121,6 +123,48 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 UpdateFilterButton();
             }
         }
+        protected override void UpdateAccessoryItemsDisplay()
+        {
+            // Follow same order as equip slots
+            int minSlot = (int)EquipSlots.Amulet0;
+            int maxSlot = (int)EquipSlots.Crystal1;
+            for (int i = minSlot; i <= maxSlot; i++)
+            {
+                // Get button and panel for this slot
+                Button button = accessoryButtons[i];
+                Panel panel = accessoryIconPanels[i];
+                if (button == null || panel == null)
+                    return;
+
+                // Get item at this equip index (if any)
+                DaggerfallUnityItem item = PlayerEntity.ItemEquipTable.GetItem((EquipSlots)button.Tag);
+                if (item == null)
+                {
+                    panel.BackgroundTexture = null;
+                    button.ToolTipText = string.Empty;
+                    button.AnimatedBackgroundTextures = null;
+                    button.BackgroundColor = Color.clear;
+                    continue;
+                }
+
+                // Update button and panel
+                ImageData image = DaggerfallUnity.Instance.ItemHelper.GetInventoryImage(item);
+                panel.BackgroundTexture = image.texture;
+                if (image.width != 0 && image.height != 0)
+                    panel.Size = new Vector2(image.width, image.height);
+                else
+                    panel.Size = new Vector2(image.texture.width, image.texture.height);
+                button.ToolTipText = item.LongName;
+                button.AnimatedBackgroundTextures = (item.IsEnchanted) ? magicAnimation.animatedTextures : null;
+                if (item.IsEnchanted && !item.IsIdentified)
+                    button.BackgroundColor = new Color(0.05f, 0.05f, 1f, 0.5f);
+                else
+                {
+                    button.BackgroundColor = Color.clear;
+                }
+            }
+        }
+
 
         protected void SetupTargetIconPanelFilterBox()
         {
@@ -192,6 +236,21 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             return;
         }
 
+        protected override Color ItemBackgroundColourHandler(DaggerfallUnityItem item)
+        {
+
+            if (item.IsEnchanted)
+            {
+                if (!item.IsIdentified)
+                    return UnIdentifiedItemBackgroundColor;
+                else
+                    return base.ItemBackgroundColourHandler(item);
+            }
+            else
+                return base.ItemBackgroundColourHandler(item);
+        }
+
+
         public override void OnPop()
         {
             ClearFilterFields();
@@ -226,26 +285,36 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     localCloseFilterButton.Enabled = false;
                 }
         }
+
         protected static bool SortMe(ref List<DaggerfallUnityItem> sortList)
         {
-
             switch (SortCriteria)
             {
                 case 2:
-                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenByDescending(x => x.weightInKg).ToList();
+                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
+                        .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
+                        .ThenByDescending(x => x.weightInKg).ToList();
                     return true;
                 case 3:
-                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenByDescending(x => x.value).ToList();
+                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
+                        .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
+                        .ThenByDescending(x => x.value).ToList();
                     return true;
                 case 4:
-                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenByDescending(x => x.value / (x.weightInKg == 0 ? 1 : x.weightInKg)).ToList();
+                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
+                        .ThenByDescending(x => x.IsQuestItem)
+                        .ThenBy(x => x.IsEnchanted && !x.IsIdentified)
+                        .ThenByDescending(x => x.value / (x.weightInKg == 0 ? 1 : x.weightInKg)).ToList();
                     return true;
                 default:
-                    sortList = sortList.OrderByDescending(x => x.IsQuestItem).ThenBy(x => x.LongName).ToList();
+                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
+                        .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
+                        .ThenBy(x => x.LongName).ToList();
                     return true;
             }
 
         }
+
         protected override void FilterLocalItems()
         {
             // Clear current references
