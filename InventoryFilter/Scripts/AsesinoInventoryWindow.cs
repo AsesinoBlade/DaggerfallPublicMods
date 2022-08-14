@@ -298,13 +298,13 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 case 3:
                     sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
                         .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
-                        .ThenByDescending(x => x.value).ToList();
+                        .ThenByDescending(x => FormulaHelper.CalculateBaseCost(x)).ToList();
                     return true;
                 case 4:
                     sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
                         .ThenByDescending(x => x.IsQuestItem)
                         .ThenBy(x => x.IsEnchanted && !x.IsIdentified)
-                        .ThenByDescending(x => x.value / (x.weightInKg == 0 ? 1 : x.weightInKg)).ToList();
+                        .ThenByDescending(x => FormulaHelper.CalculateBaseCost(x) / (x.weightInKg == 0 ? 1 : x.weightInKg)).ToList();
                     return true;
                 default:
                     sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
