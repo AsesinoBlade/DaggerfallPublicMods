@@ -1,13 +1,3 @@
-// Project:         RepaisrTools mod for Daggerfall Unity (http://www.dfworkshop.net)
-// Copyright:       Copyright (C) 2020 Kirk.O
-// License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
-// Author:          Kirk.O
-// Created On: 	    6/27/2020, 4:00 PM
-// Last Edit:		8/2/2020, 10:00 PM
-// Version:			1.05
-// Special Thanks:  Hazelnut and Ralzar
-// Modifier:		Hazelnut	
-
 using DaggerfallWorkshop;
 using DaggerfallWorkshop.Game;
 using DaggerfallWorkshop.Game.Utility;

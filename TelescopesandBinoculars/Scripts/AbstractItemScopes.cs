@@ -1,12 +1,3 @@
-// Project:         RepairTools mod for Daggerfall Unity (http://www.dfworkshop.net)
-// Copyright:       Copyright (C) 2020 Kirk.O
-// License:         MIT License (http://www.opensource.org/licenses/mit-license.php)
-// Author:          Kirk.O
-// Created On: 	    6/27/2020, 4:00 PM
-// Last Edit:		8/1/2020, 12:05 AM
-// Version:			1.00
-// Special Thanks:  Hazelnut and Ralzar
-// Modifier:		Hazelnut
 
 using System.Collections.Generic;
 using UnityEngine;
