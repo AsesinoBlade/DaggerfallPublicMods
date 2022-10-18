@@ -26,6 +26,7 @@ using System.Security.Cryptography.X509Certificates;
 using DaggerfallConnect;
 using DaggerfallWorkshop.Game.Formulas;
 using DaggerfallWorkshop.Game.MagicAndEffects;
+using JetBrains.Annotations;
 using Mono.CSharp.Linq;
 
 
@@ -38,60 +39,11 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected static Button localFilterButton;
         protected static Button localSortButton;
         protected static TextBox localFilterTextBox;
-        protected static string filterString = null;
-        protected static string[] itemGroupNames = new string[]
-        {
-            "drugs",
-            "uselessitems1",
-            "armor",
-            "weapons",
-            "magicitems",
-            "artifacts",
-            "mensclothing",
-            "books",
-            "furniture",
-            "uselessitems2",
-            "religiousitems",
-            "maps",
-            "womensclothing",
-            "paintings",
-            "gems",
-            "plantingredients1",
-            "plantingredients2",
-            "creatureingredients1",
-            "creatureingredients2",
-            "creatureingredients3",
-            "miscellaneousingredients1",
-            "metalingredients",
-            "miscellaneousingredients2",
-            "transportation",
-            "deeds",
-            "jewellery",
-            "questitems",
-            "miscitems",
-            "currency"
-        };
-
+        public static string filterString = null;
+  
         public static bool ClearFilter { get; set; }
         public static int SortCriteria { get; set; }
 
-        public static string Amulet { get;  set; }
-        public static string Bracelet { get;  set; }
-        public static string Bracer { get;  set; }
-        public static string Ring { get;  set; }
-        public static string Mark { get;  set; }
-        public static string Crystal { get;  set; }
-        public static string Head { get;  set; }
-        public static string RightArm { get;  set; }
-        public static string LeftArm { get;  set; }
-        public static string Cloak { get;  set; }
-        public static string ChestArmor { get;  set; }
-        public static string ChestClothes { get;  set; }
-        public static string RightHand { get;  set; }
-        public static string LeftHand { get;  set; }
-        public static string LegsArmor { get;  set; }
-        public static string LegsClothes { get;  set; }
-        public static string Feet { get;  set; }
         public static bool SplitTabsOnLootDrops { get; set; }
         public static bool SplitTabsOnWagon { get; set; }
 
@@ -329,7 +281,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     // Add if not equipped
                     if (!item.IsEquipped)
                     {
-                        if (ItemPassesFilter(item))
+                        if (FilterUtilities.ItemPassesFilter(item))
                             AddLocalItem(item);
                     }
 
@@ -352,7 +304,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 {
 
                     item = remoteItems.GetItem(i);
-                    if (ItemPassesFilter(item) && TabPassesFilter(item))
+                    if (FilterUtilities.ItemPassesFilter(item) && TabPassesFilter(item))
                         remoteItemsFiltered.Add(item);
                 }
 
@@ -410,127 +362,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             }
         }
 
-        protected string GetSearchTags(DaggerfallUnityItem item)
-        {
-            var equipSlot = GameManager.Instance.PlayerEntity.ItemEquipTable.GetEquipSlot(item);
-            switch (equipSlot)
-            {
-                case EquipSlots.None:
-                    return string.Empty;
-                case EquipSlots.Amulet0:
-                case EquipSlots.Amulet1:
-                    return Amulet;
-                case EquipSlots.Bracelet0:
-                case EquipSlots.Bracelet1:
-                    return Bracelet;
-                case EquipSlots.Bracer0:
-                case EquipSlots.Bracer1:
-                    return Bracer;
-                case EquipSlots.Ring0:
-                case EquipSlots.Ring1:
-                    return Ring;
-                case EquipSlots.Mark0:
-                case EquipSlots.Mark1:
-                    return Mark;
-                case EquipSlots.Crystal0:
-                case EquipSlots.Crystal1:
-                    return Crystal;
-                case EquipSlots.Head:
-                    return Head;
-                case EquipSlots.RightArm:
-                    return RightArm;
-                case EquipSlots.LeftArm:
-                    return LeftArm;
-                case EquipSlots.Cloak1:
-                case EquipSlots.Cloak2:
-                    return Cloak;
-                case EquipSlots.ChestClothes:
-                    return ChestClothes;
-                case EquipSlots.ChestArmor:
-                    return ChestArmor;
-                case EquipSlots.RightHand:
-                case EquipSlots.Gloves:
-                    return RightHand;
-                case EquipSlots.LeftHand:
-                    return LeftHand;
-                case EquipSlots.LegsArmor:
-                    return LegsArmor;
-                case EquipSlots.LegsClothes:
-                    return LegsClothes;
-                case EquipSlots.Feet:
-                    return Feet;
-                default:
-                    return string.Empty;
-            }
-
-        }
-        
-        protected bool ItemPassesFilter(DaggerfallUnityItem item)
-        {
-            bool iterationPass = false;
-            bool isRecipe = false;
-            string recipeName = string.Empty;
-
-            string str = string.Empty;
-            str = GetSearchTags(item);
-
-            Type itemClassType;
-            if (item.TemplateIndex > ItemHelper.LastDFTemplate)
-                if (GameManager.Instance.ItemHelper.GetCustomItemClass(item.TemplateIndex, out itemClassType) )
-                    if (itemClassType != null)
-                    {
-                        str += " " + itemClassType.ToString();
-                    }
-
-            if (String.IsNullOrEmpty(filterString))
-                return true;
-
-            if (item.LongName.ToLower().Contains("recipe"))
-            {
-                TextFile.Token[] tokens = ItemHelper.GetItemInfo(item, DaggerfallUnity.TextProvider);
-                MacroHelper.ExpandMacros(ref tokens, item);
-                recipeName = tokens[0].text;
-                isRecipe = true;
-            }
-
-            foreach (string word in filterString.Split(' '))
-            {
-                if (word.Trim().Length > 0)
-                {
-                    if (word[0] == '-')
-                    {
-                        string wordLessFirstChar = word.Remove(0, 1);
-                        iterationPass = true;
-                        if (item.LongName.IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = false;
-                        else if (isRecipe &&  recipeName.IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = false;
-                        else if (itemGroupNames[(int)item.ItemGroup].IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = false;
-                        else if (str != null && str.IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = false;
-                    }
-                    else
-                    {
-                        iterationPass = false;
-                        if (item.LongName.IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = true;
-                        else if (isRecipe && recipeName.IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = true;
-                        else if (itemGroupNames[(int)item.ItemGroup].IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = true;
-                        else if (str != null && str.IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
-                                iterationPass = true;
-
-                    }
-
-                    if (!iterationPass)
-                        return false;
-                }
-            }
-
-            return true;
-        }
 
         private void ClearFilterFields()
         {

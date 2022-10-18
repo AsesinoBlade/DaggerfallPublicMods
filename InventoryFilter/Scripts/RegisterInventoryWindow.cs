@@ -29,23 +29,23 @@ public class RegisterInventoryWindow : MonoBehaviour
         AsesinoTradeWindow.CheckClothingStore = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckClothingStore");
         AsesinoTradeWindow.CheckBookStore = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckBookStore");
         AsesinoTradeWindow.CheckGemStore = mod.GetSettings().GetValue<bool>("CheckStoreSplitForTabs", "CheckGemStore");
-        AsesinoInventoryWindow.Amulet = settings.GetString("SearchTags", "Amulet");
-        AsesinoInventoryWindow.Bracelet = settings.GetString("SearchTags", "Bracelet");
-        AsesinoInventoryWindow.Bracer = settings.GetString("SearchTags", "Bracer");
-        AsesinoInventoryWindow.Ring = settings.GetString("SearchTags", "Ring");
-        AsesinoInventoryWindow.Mark = settings.GetString("SearchTags", "Mark");
-        AsesinoInventoryWindow.Crystal = settings.GetString("SearchTags", "Crystal");
-        AsesinoInventoryWindow.Head = settings.GetString("SearchTags", "Head");
-        AsesinoInventoryWindow.RightArm = settings.GetString("SearchTags", "RightArm");
-        AsesinoInventoryWindow.LeftArm = settings.GetString("SearchTags", "LeftArm");
-        AsesinoInventoryWindow.Cloak = settings.GetString("SearchTags", "Cloak");
-        AsesinoInventoryWindow.ChestArmor = settings.GetString("SearchTags", "ChestArmor");
-        AsesinoInventoryWindow.ChestClothes = settings.GetString("SearchTags", "ChestClothes");
-        AsesinoInventoryWindow.RightHand = settings.GetString("SearchTags", "RightHand");
-        AsesinoInventoryWindow.LeftHand = settings.GetString("SearchTags", "LeftHand");
-        AsesinoInventoryWindow.LegsArmor = settings.GetString("SearchTags", "LegsArmor");
-        AsesinoInventoryWindow.LegsClothes = settings.GetString("SearchTags", "LegsClothes");
-        AsesinoInventoryWindow.Feet = settings.GetString("SearchTags", "Feet");
+        FilterUtilities.Amulet += settings.GetString("SearchTags", "Amulet");
+        FilterUtilities.Bracelet += settings.GetString("SearchTags", "Bracelet");
+        FilterUtilities.Bracer += settings.GetString("SearchTags", "Bracer");
+        FilterUtilities.Ring += settings.GetString("SearchTags", "Ring");
+        FilterUtilities.Mark += settings.GetString("SearchTags", "Mark");
+        FilterUtilities.Crystal += settings.GetString("SearchTags", "Crystal");
+        FilterUtilities.Head += settings.GetString("SearchTags", "Head");
+        FilterUtilities.RightArm += settings.GetString("SearchTags", "RightArm");
+        FilterUtilities.LeftArm += settings.GetString("SearchTags", "LeftArm");
+        FilterUtilities.Cloak += settings.GetString("SearchTags", "Cloak");
+        FilterUtilities.ChestArmor += settings.GetString("SearchTags", "ChestArmor");
+        FilterUtilities.ChestClothes += settings.GetString("SearchTags", "ChestClothes");
+        FilterUtilities.RightHand += settings.GetString("SearchTags", "RightHand");
+        FilterUtilities.LeftHand += settings.GetString("SearchTags", "LeftHand");
+        FilterUtilities.LegsArmor += settings.GetString("SearchTags", "LegsArmor");
+        FilterUtilities.LegsClothes += settings.GetString("SearchTags", "LegsClothes");
+        FilterUtilities.Feet += settings.GetString("SearchTags", "Feet");
     }
 
     public void Start()

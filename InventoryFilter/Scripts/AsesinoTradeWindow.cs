@@ -299,7 +299,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                             (WindowMode == WindowModes.Sell && ItemTypesAccepted.Contains(item.ItemGroup)) ||
                             (WindowMode == WindowModes.SellMagic && item.IsEnchanted)))
                     {
-                        if (ItemPassesFilter(item) && TabPassesFilter(item))
+                        if (FilterUtilities.ItemPassesFilter(item) && TabPassesFilter(item))
                             AddLocalItem(item);
                     }
                     else
@@ -307,7 +307,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                         if(GameManager.Instance.PlayerEnterExit.BuildingType == DaggerfallConnect.DFLocation.BuildingTypes.Alchemist &&
                            item.LongName.ToLower().Contains("potion"))
                         {
-                            if (ItemPassesFilter(item) && TabPassesFilter(item))
+                            if (FilterUtilities.ItemPassesFilter(item) && TabPassesFilter(item))
                                 AddLocalItem(item);
                         }
 
@@ -358,7 +358,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 {
 
                     item = remoteItems.GetItem(i);
-                    if (ItemPassesFilter(item) && TabPassesFilter(item))
+                    if (FilterUtilities.ItemPassesFilter(item) && TabPassesFilter(item))
                         remoteItemsFiltered.Add(item);
                 }
             }
@@ -454,43 +454,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             }
         }
 
-        protected virtual bool ItemPassesFilter(DaggerfallUnityItem item)
-        {
-            bool iterationPass = false;
-
-            if (String.IsNullOrEmpty(filterString))
-                return true;
-
-            foreach (string word in filterString.Split(' '))
-            {
-                if (word.Trim().Length > 0)
-                {
-                    if (word[0] == '-')
-                    {
-                        string wordLessFirstChar = word.Remove(0, 1);
-                        iterationPass = true;
-                        if (item.LongName.IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = false;
-                        else if (itemGroupNames[(int)item.ItemGroup].IndexOf(wordLessFirstChar, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = false;
-                    }
-                    else
-                    {
-                        iterationPass = false;
-                        if (item.LongName.IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = true;
-                        else if (itemGroupNames[(int)item.ItemGroup].IndexOf(word, StringComparison.OrdinalIgnoreCase) != -1)
-                            iterationPass = true;
-                    }
-
-                    if (!iterationPass)
-                        return false;
-                }
-            }
-
-            return true;
-        }
-
+ 
         protected static bool SortMe(ref List<DaggerfallUnityItem> sortList)
         {
             switch (SortCriteria)
