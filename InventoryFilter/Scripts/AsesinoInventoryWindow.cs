@@ -10,24 +10,11 @@
 //
 
 using UnityEngine;
-using System;
 using System.Collections.Generic;
-using DaggerfallConnect.Arena2;
-using DaggerfallConnect.Utility;
-using DaggerfallWorkshop.Utility;
 using DaggerfallWorkshop.Game.UserInterface;
-using DaggerfallWorkshop.Game.Entity;
 using DaggerfallWorkshop.Game.Items;
-using DaggerfallWorkshop.Game.Utility;
-using DaggerfallWorkshop.Game.Questing;
-using DaggerfallWorkshop.Game.Banking;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using DaggerfallConnect;
 using DaggerfallWorkshop.Game.Formulas;
-using DaggerfallWorkshop.Game.MagicAndEffects;
-using JetBrains.Annotations;
-using Mono.CSharp.Linq;
 
 
 namespace DaggerfallWorkshop.Game.UserInterfaceWindows
@@ -188,7 +175,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             return;
         }
 
-        protected override Color ItemBackgroundColourHandler(DaggerfallUnityItem item)
+        protected override Color ItemBackgroundColorHandler(DaggerfallUnityItem item)
         {
 
             if (item.IsEnchanted)
@@ -196,10 +183,10 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 if (!item.IsIdentified)
                     return UnIdentifiedItemBackgroundColor;
                 else
-                    return base.ItemBackgroundColourHandler(item);
+                    return base.ItemBackgroundColorHandler(item);
             }
             else
-                return base.ItemBackgroundColourHandler(item);
+                return base.ItemBackgroundColorHandler(item);
         }
 
 
@@ -238,34 +225,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 }
         }
 
-        protected static bool SortMe(ref List<DaggerfallUnityItem> sortList)
-        {
-            switch (SortCriteria)
-            {
-                case 2:
-                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
-                        .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
-                        .ThenByDescending(x => x.weightInKg).ToList();
-                    return true;
-                case 3:
-                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
-                        .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
-                        .ThenByDescending(x => FormulaHelper.CalculateBaseCost(x)).ToList();
-                    return true;
-                case 4:
-                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
-                        .ThenByDescending(x => x.IsQuestItem)
-                        .ThenBy(x => x.IsEnchanted && !x.IsIdentified)
-                        .ThenByDescending(x => FormulaHelper.CalculateBaseCost(x) / (x.weightInKg == 0 ? 1 : x.weightInKg)).ToList();
-                    return true;
-                default:
-                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
-                        .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
-                        .ThenBy(x => x.LongName).ToList();
-                    return true;
-            }
-
-        }
 
         protected override void FilterLocalItems()
         {
@@ -281,14 +240,14 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     // Add if not equipped
                     if (!item.IsEquipped)
                     {
-                        if (FilterUtilities.ItemPassesFilter(item))
+                        if (FilterUtilities.ItemPassesFilter(filterString,item))
                             AddLocalItem(item);
                     }
 
                 }
 
                 if (localItemsFiltered.Count > 0)
-                    SortMe(ref localItemsFiltered);
+                    FilterUtilities.SortMe(SortCriteria, ref localItemsFiltered);
             }
         }
 
@@ -304,12 +263,12 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 {
 
                     item = remoteItems.GetItem(i);
-                    if (FilterUtilities.ItemPassesFilter(item) && TabPassesFilter(item))
+                    if (FilterUtilities.ItemPassesFilter(filterString,item) && TabPassesFilter(item))
                         remoteItemsFiltered.Add(item);
                 }
 
             if (remoteItemsFiltered.Count > 0)
-                SortMe(ref remoteItemsFiltered);
+                FilterUtilities.SortMe(SortCriteria, ref remoteItemsFiltered);
         }
 
         bool TabPassesFilter(DaggerfallUnityItem item )

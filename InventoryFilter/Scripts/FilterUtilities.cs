@@ -4,8 +4,9 @@ using DaggerfallWorkshop.Game;
 using DaggerfallWorkshop.Utility;
 using DaggerfallWorkshop;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using DaggerfallWorkshop.Game.Formulas;
 using DaggerfallWorkshop.Game.UserInterfaceWindows;
 using UnityEngine;
 
@@ -75,6 +76,39 @@ public class FilterUtilities : MonoBehaviour
         
     }
 
+    public static bool SortMe(int sortCriteria,ref List<DaggerfallUnityItem> sortList)
+    {
+        switch (sortCriteria)
+        {
+            case 2:
+                sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
+                    .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
+                    .ThenByDescending(x => x.weightInKg).ToList();
+                return true;
+            case 3:
+                sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
+                    .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
+                    .ThenByDescending(x => FormulaHelper.CalculateBaseCost(x)).ToList();
+                return true;
+            case 4:
+                sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
+                    .ThenByDescending(x => x.IsQuestItem)
+                    .ThenBy(x => x.IsEnchanted && !x.IsIdentified)
+                    .ThenByDescending(x => FormulaHelper.CalculateBaseCost(x) / (x.weightInKg == 0 ? 1 : x.weightInKg)).ToList();
+                return true;
+            default:
+                sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
+                    .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
+                    .ThenBy(x =>
+                        x.IsPotionRecipe
+                            ? TextManager.Instance.GetLocalizedText("potionRecipeFor") + GameManager.Instance
+                                .EntityEffectBroker.GetPotionRecipe(x.potionRecipeKey).DisplayName
+                            : x.LongName).ToList();
+                return true;
+        }
+    }
+
+
     protected static string GetSearchTags(DaggerfallUnityItem item)
     {
         var equipSlot = GameManager.Instance.PlayerEntity.ItemEquipTable.GetEquipSlot(item);
@@ -130,7 +164,7 @@ public class FilterUtilities : MonoBehaviour
 
     }
 
-    public static bool ItemPassesFilter(DaggerfallUnityItem item)
+    public static bool ItemPassesFilter(string filterString,DaggerfallUnityItem item)
     {
         bool iterationPass = false;
         bool isRecipe = false;
@@ -142,10 +176,6 @@ public class FilterUtilities : MonoBehaviour
         {
             str = GetSearchTags(item);
 
-
-            if (str != null && str != string.Empty)
-                Debug.Log($"found {str}");
-
             Type itemClassType;
             if (item.TemplateIndex > ItemHelper.LastDFTemplate)
                 if (GameManager.Instance.ItemHelper.GetCustomItemClass(item.TemplateIndex, out itemClassType))
@@ -154,7 +184,7 @@ public class FilterUtilities : MonoBehaviour
                         str += " " + itemClassType.ToString();
                     }
 
-            if (String.IsNullOrEmpty(AsesinoInventoryWindow.filterString))
+            if (String.IsNullOrEmpty(filterString))
                 return true;
 
             if (item.LongName.ToLower().Contains("recipe"))
@@ -165,7 +195,7 @@ public class FilterUtilities : MonoBehaviour
                 isRecipe = true;
             }
 
-            foreach (string word in AsesinoInventoryWindow.filterString.Split(' '))
+            foreach (string word in filterString.Split(' '))
             {
                 if (word.Trim().Length > 0)
                 {

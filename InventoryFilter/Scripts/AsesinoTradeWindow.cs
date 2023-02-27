@@ -9,20 +9,14 @@
 // Notes:
 //
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DaggerfallConnect;
-using DaggerfallConnect.Arena2;
-using DaggerfallConnect.Utility;
 using DaggerfallWorkshop.Utility;
 using DaggerfallWorkshop.Game.UserInterface;
-using DaggerfallWorkshop.Game.Entity;
 using DaggerfallWorkshop.Game.Items;
-using DaggerfallWorkshop.Game.Banking;
 using DaggerfallWorkshop.Game.Formulas;
 using DaggerfallWorkshop.Game.Guilds;
-using DaggerfallWorkshop.Game.Utility;
 
 namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 {
@@ -39,39 +33,6 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected static string filterString = null;
         protected Color UnIdentifiedItemBackgroundColor = new Color(0.05f, 0.05f, 1f, 0.5f);
 
-
-        protected static string[] itemGroupNames = new string[]
-        {
-            "drugs",
-            "uselessitems1",
-            "armor",
-            "weapons",
-            "magicitems",
-            "artifacts",
-            "mensclothing",
-            "books",
-            "furniture",
-            "uselessitems2",
-            "religiousitems",
-            "maps",
-            "womensclothing",
-            "paintings",
-            "gems",
-            "plantingredients1",
-            "plantingredients2",
-            "creatureingredients1",
-            "creatureingredients2",
-            "creatureingredients3",
-            "miscellaneousingredients1",
-            "metalingredients",
-            "miscellaneousingredients2",
-            "transportation",
-            "deeds",
-            "jewellery",
-            "questitems",
-            "miscitems",
-            "currency"
-        };
 
         public static bool ClearFilter { get; set; }
         public static int SortCriteria { get; set; }
@@ -233,13 +194,13 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         }
 
 
-        protected override Color ItemBackgroundColourHandler(DaggerfallUnityItem item)
+        protected override Color ItemBackgroundColorHandler(DaggerfallUnityItem item)
         {
 
             if (item.IsEnchanted && !item.IsIdentified)
                 return UnIdentifiedItemBackgroundColor;
             else
-                return base.ItemBackgroundColourHandler(item);
+                return base.ItemBackgroundColorHandler(item);
         }
 
 
@@ -299,7 +260,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                             (WindowMode == WindowModes.Sell && ItemTypesAccepted.Contains(item.ItemGroup)) ||
                             (WindowMode == WindowModes.SellMagic && item.IsEnchanted)))
                     {
-                        if (FilterUtilities.ItemPassesFilter(item) && TabPassesFilter(item))
+                        if (FilterUtilities.ItemPassesFilter(filterString, item) && TabPassesFilter(item))
                             AddLocalItem(item);
                     }
                     else
@@ -307,7 +268,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                         if(GameManager.Instance.PlayerEnterExit.BuildingType == DaggerfallConnect.DFLocation.BuildingTypes.Alchemist &&
                            item.LongName.ToLower().Contains("potion"))
                         {
-                            if (FilterUtilities.ItemPassesFilter(item) && TabPassesFilter(item))
+                            if (FilterUtilities.ItemPassesFilter(filterString, item) && TabPassesFilter(item))
                                 AddLocalItem(item);
                         }
 
@@ -315,7 +276,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 }
 
                 if (localItemsFiltered.Count > 0)
-                    SortMe(ref localItemsFiltered);
+                    FilterUtilities.SortMe(SortCriteria, ref localItemsFiltered);
             }
         }
 
@@ -358,13 +319,13 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 {
 
                     item = remoteItems.GetItem(i);
-                    if (FilterUtilities.ItemPassesFilter(item) && TabPassesFilter(item))
+                    if (FilterUtilities.ItemPassesFilter(filterString, item) && TabPassesFilter(item))
                         remoteItemsFiltered.Add(item);
                 }
             }
 
             if (remoteItemsFiltered.Count > 0)
-                SortMe(ref remoteItemsFiltered);
+                FilterUtilities.SortMe(SortCriteria, ref remoteItemsFiltered);
         }
 
         protected bool TabPassesFilter(DaggerfallUnityItem item)
@@ -455,34 +416,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         }
 
  
-        protected static bool SortMe(ref List<DaggerfallUnityItem> sortList)
-        {
-            switch (SortCriteria)
-            {
-                case 2:
-                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
-                        .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
-                        .ThenByDescending(x => x.weightInKg).ToList();
-                    return true;
-                case 3:
-                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
-                        .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
-                        .ThenByDescending(x => FormulaHelper.CalculateBaseCost(x)).ToList();
-                    return true;
-                case 4:
-                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
-                        .ThenByDescending(x => x.IsQuestItem)
-                        .ThenBy(x => x.IsEnchanted && !x.IsIdentified)
-                        .ThenByDescending(x => FormulaHelper.CalculateBaseCost(x) / (x.weightInKg == 0 ? 1 : x.weightInKg)).ToList();
-                    return true;
-                default:
-                    sortList = sortList.OrderByDescending(x => x.LongName == "Spellbook")
-                        .ThenByDescending(x => x.IsQuestItem).ThenBy(x => x.IsEnchanted && !x.IsIdentified)
-                        .ThenBy(x => x.LongName).ToList();
-                    return true;
-            }
 
-        }
 
         private void UpdateFilterButton()
         {
