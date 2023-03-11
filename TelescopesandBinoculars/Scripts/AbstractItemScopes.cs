@@ -35,14 +35,6 @@ namespace Telescopes
 
         public abstract bool NightVision { get; }
 
-
-
-
-
-
-
-
-
         //public abstract Rect TelescopeDirectionPos { get; set; }
 
         //public abstract Texture2D TelescopeLens { get; set; }
@@ -61,6 +53,7 @@ namespace Telescopes
                 Telescopes.TelescopeAndBinoculars.maxLevel = MaxZoom;
                 Telescopes.TelescopeAndBinoculars.TelescopeDirectionPos = CalculateTelescopeDirectionPos();
                 Telescopes.TelescopeAndBinoculars.telescopeLens = CalculateTexture();
+                Telescopes.TelescopeAndBinoculars.material.SetTexture("_MainTex", Telescopes.TelescopeAndBinoculars.telescopeLens);
                 Telescopes.TelescopeAndBinoculars.maxLevel = Mathf.Min(Telescopes.TelescopeAndBinoculars.absMaxLevel, MaxZoom);
                 Telescopes.TelescopeAndBinoculars.nightVision = NightVision;
                 DaggerfallUI.UIManager.PopWindow();

@@ -58,7 +58,7 @@ namespace Telescopes
         public static Mod myMod;
         public static bool curParalyzed;
         public static bool isStationary;
-
+        public static Material material;
         static Camera fovCamera;
         static float prevFov;
         static float origFov;
@@ -83,7 +83,7 @@ namespace Telescopes
             itemHelper.RegisterCustomItem(ItemNVGoggles.templateIndex, ItemGroups.UselessItems2, typeof(ItemNVGoggles));
 
             pos = new Rect(Vector2.zero, new Vector2(Screen.width, Screen.height));
-
+            material = mod.GetAsset<Material>("LensMaterial");
             GameObject camObj = GameObject.FindGameObjectWithTag("MainCamera");
             if (camObj)
             {
@@ -219,6 +219,25 @@ namespace Telescopes
             Debug.Log("Finished mod init: Telescopes and Binoculars");
         }
 
+        private bool CompareTexture(Texture2D first, Texture2D second)
+        {
+            Color[] firstPix = first.GetPixels();
+            Color[] secondPix = second.GetPixels();
+            if (firstPix.Length != secondPix.Length)
+            {
+                return false;
+            }
+            for (int i = 0; i < firstPix.Length; i++)
+            {
+                if (firstPix[i] != secondPix[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void OnGUI()
         {
             if (!TelescopeEnabled)
@@ -239,7 +258,11 @@ namespace Telescopes
 
 
                 if (telescopeOverlay)
-                    GUI.DrawTexture(pos, telescopeLens, ScaleMode.StretchToFill);
+                {
+
+                    //Debug.Log($"ZZZ Zoom: {CompareTexture((Texture2D) material.GetTexture("_MainTex"), telescopeLens)}");
+                    Graphics.DrawTexture(pos, telescopeLens, 0, Screen.width, 0, Screen.height, material);
+                }
 
                 /*
                 if (showScopeDirections)
