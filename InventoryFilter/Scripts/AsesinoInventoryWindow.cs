@@ -175,7 +175,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             return;
         }
 
-        protected override Color ItemBackgroundColorHandler(DaggerfallUnityItem item)
+        protected override Color ItemBackgroundColourHandler(DaggerfallUnityItem item)
         {
 
             if (item.IsEnchanted)
@@ -183,10 +183,10 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                 if (!item.IsIdentified)
                     return UnIdentifiedItemBackgroundColor;
                 else
-                    return base.ItemBackgroundColorHandler(item);
+                    return base.ItemBackgroundColourHandler(item);
             }
             else
-                return base.ItemBackgroundColorHandler(item);
+                return base.ItemBackgroundColourHandler(item);
         }
 
 

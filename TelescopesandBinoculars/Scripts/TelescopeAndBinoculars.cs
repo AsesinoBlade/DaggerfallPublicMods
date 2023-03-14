@@ -28,6 +28,7 @@ namespace Telescopes
         public static bool telescopeOverlay = true;
         public static Rect TelescopeDirectionPos;
         public static int TelescopeCost = 100;
+        public static bool RainShowing = false;
 
         public static Rect pos;
         public static GUIStyle guiStyle = new GUIStyle();
@@ -99,6 +100,7 @@ namespace Telescopes
             pe = GameManager.Instance.PlayerEntity;
             PopulateZoomLevel();
 
+            /*
             // create light source for night vision
             lightGameObject = new GameObject("Night Vision");
             lightComponent = lightGameObject.AddComponent<Light>();
@@ -106,7 +108,7 @@ namespace Telescopes
             lightGameObject.transform.position = new Vector3(0, 5, 0);
             lightComponent.intensity = 1;
             lightComponent.enabled = false;
-
+            */
 
         }
 
@@ -240,28 +242,54 @@ namespace Telescopes
 
         private void OnGUI()
         {
+            
             if (!TelescopeEnabled)
                 return;
 
             if (Event.current.type.Equals(EventType.Repaint) && !GameManager.IsGamePaused)
             {
                 GUI.depth = 1;
+                if (GameManager.Instance.PlayerEnterExit.IsPlayerInside)
+                    RainShowing = false;
+                else
+                    RainShowing = GameManager.Instance.WeatherManager.IsRaining ||
+                              GameManager.Instance.WeatherManager.IsStorming;
+                /*
                 if (nightVision)
                 {
                     lightGameObject.transform.position = GameManager.Instance.PlayerObject.transform.position;
                     lightComponent.color = Color.green;
                     lightComponent.type = LightType.Point;
+                    lightComponent.range = 50 + 100 * (RainShowing ? 1 : 0);
+                    lightComponent.enabled = true;
+                }
+               
+                 else if (RainShowing)
+                
+                {
+                    lightGameObject.transform.position = GameManager.Instance.PlayerObject.transform.position;
+                    lightComponent.color = Color.white;
+                    lightComponent.type = LightType.Point;
                     lightComponent.range = 50;
                     lightComponent.enabled = true;
                 }
+               */
+                material.SetColor("_NightVisionColor",Color.green);
+                material.SetFloat("_Raining", (RainShowing ? 1 : 0));
+                material.SetFloat("_NightVision", (nightVision ? 1 : 0));
+                material.SetFloat("_BaseIntensity", 5);
+                material.SetFloat("_NightVisionIntensity", 20);
 
-
-
+                
                 if (telescopeOverlay)
                 {
 
-                    //Debug.Log($"ZZZ Zoom: {CompareTexture((Texture2D) material.GetTexture("_MainTex"), telescopeLens)}");
-                    Graphics.DrawTexture(pos, telescopeLens, 0, Screen.width, 0, Screen.height, material);
+                    if (RainShowing || nightVision)
+                        Graphics.DrawTexture(pos, telescopeLens, 0, Screen.width, 0, Screen.height, material);
+                    else
+                    {
+                        GUI.DrawTexture(pos, telescopeLens, ScaleMode.StretchToFill);
+                    }
                 }
 
                 /*
