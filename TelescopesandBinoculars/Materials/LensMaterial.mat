@@ -64,31 +64,41 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Blur: 1
+    - _BaseIntensity: 2.3
+    - _Blur: 0.01
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _Distortion: 0
+    - _Distortion: 2
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _Height: 1080
     - _Metallic: 0
     - _Mode: 0
+    - _NightVision: 1
     - _NightVisionAmount: 0
+    - _NightVisionIntensity: 50
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _RainAmount: 0
-    - _Size: 5
+    - _Raining: 0
+    - _Ratio: 1.7767857
+    - _Size: 2.5
     - _SmoothnessTextureChannel: 0
+    - _Snowing: 1
     - _SpecularHighlights: 1
     - _Speed: 1
     - _SrcBlend: 1
     - _Strength: 0.5
     - _T: 1
+    - _Thundering: 0
     - _UVSec: 0
+    - _Width: 1920
     - _ZWrite: 1
     - _Zoom: 1
     m_Colors:
     - _Color: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NightVisionColor: {r: 1, g: 1, b: 1, a: 1}

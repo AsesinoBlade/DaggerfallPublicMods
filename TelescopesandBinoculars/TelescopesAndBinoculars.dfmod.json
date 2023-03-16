@@ -13,7 +13,8 @@
         "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/Templates/831_0-0.png",
         "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/Templates/832_0-0.png",
         "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/Materials/LensMaterial.mat",
-        "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/Shaders/RainEffectShader.shader"
+        "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/Shaders/RainEffectShader.shader",
+        "Assets/Game/Mods/DaggerfallPublicMods/TelescopesandBinoculars/modsettings.json"
     ],
     "ModPreCompile": false
 }

@@ -45,8 +45,20 @@ namespace Telescopes
         public KeyCode downKey = KeyCode.DownArrow;
         public string downString = "Down Arrow";
         public static GameObject lightGameObject;
-        public static Light lightComponent;
+        //public static Light lightComponent;
         public static bool nightVision;
+
+        // material properties
+        public  float MatSize = 1.5f;
+        public  float MatTime = 1;
+        public  float MatRainDistortion = 2f;
+        public  float MatThunderDistortion = 2f;
+        public float MatRainBlur = 0.0003f;
+        public float MatThunderBlur = 0.01f;
+        public Color MatNightVisionColor = Color.green;
+        public  float MatBaseIntensity = 2.3f;
+        public float MatNightVisionIntensity = 20;
+        public float MatRatio = 1.77f;
 
 
         public static TelescopeAndBinoculars Instance
@@ -95,23 +107,28 @@ namespace Telescopes
             var screenX = Screen.width;
             var screenY = Screen.height;
 
+            MatRatio = (float)screenX / screenY;
+
             guiStyle.normal.textColor = Color.yellow;
             guiStyle.fontSize = 20;
             pe = GameManager.Instance.PlayerEntity;
             PopulateZoomLevel();
 
-            /*
-            // create light source for night vision
-            lightGameObject = new GameObject("Night Vision");
-            lightComponent = lightGameObject.AddComponent<Light>();
-            lightComponent.color = Color.green;
-            lightGameObject.transform.position = new Vector3(0, 5, 0);
-            lightComponent.intensity = 1;
-            lightComponent.enabled = false;
-            */
 
         }
 
+        private void LoadSettings(ModSettings settings, ModSettingsChange change)
+        {
+
+            MatSize = settings.GetValue<float>("Options", "RainSize");
+            MatRainDistortion = settings.GetValue<float>("Options", "RainDistortion");
+            MatThunderDistortion = settings.GetValue<float>("Options", "ThunderDistortion");
+            MatRainBlur = (float) (settings.GetValue<int>("Options", "RainBlur")) / 1000f;
+            MatThunderBlur = (float) (settings.GetValue<int>("Options", "ThunderBlur")) / 1000f;
+            MatNightVisionColor = settings.GetColor("Options", "NightVisionColor");
+            MatBaseIntensity = settings.GetValue<float>("Options", "BaseIntensity");
+            MatNightVisionIntensity = (float)settings.GetValue<int>("Options", "NightVisionIntensity");
+        }
 
         [Invoke(StateManager.StateTypes.Start, 0)]
         public static void Init(InitParams initParams)
@@ -126,8 +143,6 @@ namespace Telescopes
         {
             if (!TelescopeEnabled)
             {
-                if (lightComponent != null)
-                    lightComponent.enabled = false;
                 return;
             }
 
@@ -135,7 +150,6 @@ namespace Telescopes
             if (DaggerfallUI.UIManager.TopWindow.GetType() != typeof(DaggerfallHUD))
             {
                 fovCamera.fieldOfView = origFov;
-                lightComponent.enabled = false;
                 return;
             }
 
@@ -146,7 +160,6 @@ namespace Telescopes
                 TelescopeEnabled = !TelescopeEnabled;
                 fovCamera.fieldOfView = origFov;
                 pe.IsParalyzed = curParalyzed;
-                lightComponent.enabled = false;
                 currZoom = 1;
             }
 
@@ -212,12 +225,13 @@ namespace Telescopes
 
         #region InitMod and Settings
 
-        private static void InitMod()
+        private  void InitMod()
         {
             Debug.Log("Begin mod init: Telescopes And Binoculars");
             //var settings = mod.GetSettings();
+            mod.LoadSettingsCallback = LoadSettings;
+            mod.LoadSettings();
 
- 
             Debug.Log("Finished mod init: Telescopes and Binoculars");
         }
 
@@ -254,42 +268,71 @@ namespace Telescopes
                 else
                     RainShowing = GameManager.Instance.WeatherManager.IsRaining ||
                               GameManager.Instance.WeatherManager.IsStorming;
-                /*
-                if (nightVision)
-                {
-                    lightGameObject.transform.position = GameManager.Instance.PlayerObject.transform.position;
-                    lightComponent.color = Color.green;
-                    lightComponent.type = LightType.Point;
-                    lightComponent.range = 50 + 100 * (RainShowing ? 1 : 0);
-                    lightComponent.enabled = true;
-                }
-               
-                 else if (RainShowing)
-                
-                {
-                    lightGameObject.transform.position = GameManager.Instance.PlayerObject.transform.position;
-                    lightComponent.color = Color.white;
-                    lightComponent.type = LightType.Point;
-                    lightComponent.range = 50;
-                    lightComponent.enabled = true;
-                }
-               */
-                material.SetColor("_NightVisionColor",Color.green);
-                material.SetFloat("_Raining", (RainShowing ? 1 : 0));
-                material.SetFloat("_NightVision", (nightVision ? 1 : 0));
-                material.SetFloat("_BaseIntensity", 5);
-                material.SetFloat("_NightVisionIntensity", 20);
 
-                
+                var ThunderShowing = GameManager.Instance.WeatherManager.IsStorming;
+
+
                 if (telescopeOverlay)
                 {
+                    if (RainShowing && !ThunderShowing)
+                    {
+                        material.SetFloat("_Size", MatSize);
+                        material.SetFloat("_Time", MatTime);
+                        material.SetFloat("_Distortion", MatRainDistortion);
+                        material.SetFloat("_Blur", MatRainBlur);
+                        material.SetFloat("_Ratio", MatRatio);
+                        material.SetFloat("_NightVision", nightVision ? 1 : 0);
+                        material.SetColor("_NightVisionColor", MatNightVisionColor);
+                        material.SetFloat("_NightVisionIntensity", MatNightVisionIntensity);
 
-                    if (RainShowing || nightVision)
+                        material.SetFloat("_Raining", 1);
+
+                        material.SetFloat("_BaseIntensity", MatBaseIntensity);
+
                         Graphics.DrawTexture(pos, telescopeLens, 0, Screen.width, 0, Screen.height, material);
+                    }
+                    else if (RainShowing && ThunderShowing)
+                    {
+                        material.SetFloat("_Size", MatSize);
+                        material.SetFloat("_Time", MatTime);
+                        material.SetFloat("_Distortion", MatThunderDistortion);
+                        material.SetFloat("_Blur", MatThunderBlur);
+                        material.SetFloat("_Ratio", MatRatio);
+                        material.SetFloat("_NightVision", nightVision ? 1 : 0);
+                        material.SetColor("_NightVisionColor", MatNightVisionColor);
+                        material.SetFloat("_NightVisionIntensity", MatNightVisionIntensity);
+
+                        material.SetFloat("_Raining", 1);
+
+                        material.SetFloat("_BaseIntensity", MatBaseIntensity);
+
+                        Graphics.DrawTexture(pos, telescopeLens, 0, Screen.width, 0, Screen.height, material);
+                    }
+                    else if (nightVision)
+                    {
+
+                        material.SetFloat("_Size", MatSize);
+                        material.SetFloat("_Time", MatTime);
+                        material.SetFloat("_Distortion", MatThunderDistortion);
+                        material.SetFloat("_Blur", MatThunderBlur);
+                        material.SetFloat("_Ratio", MatRatio);
+                        material.SetFloat("_NightVision", nightVision ? 1 : 0);
+                        material.SetColor("_NightVisionColor", MatNightVisionColor);
+                        material.SetFloat("_Raining", 0);
+
+                        material.SetFloat("_BaseIntensity", MatBaseIntensity);
+                        material.SetFloat("_NightVisionIntensity", MatNightVisionIntensity); material.SetColor("_NightVisionColor", MatNightVisionColor);
+                        material.SetFloat("_NightVision", 1);
+                        material.SetFloat("_NightVisionIntensity", MatNightVisionIntensity);
+
+                        Graphics.DrawTexture(pos, telescopeLens, 0, Screen.width, 0, Screen.height, material);
+
+                    }
                     else
                     {
                         GUI.DrawTexture(pos, telescopeLens, ScaleMode.StretchToFill);
                     }
+
                 }
 
                 /*
@@ -442,21 +485,21 @@ namespace Telescopes
 
             public static string Execute(params string[] args)
             {
-                if (TelescopeAndBinoculars.lightComponent != null)
-                {
-                    int a;
-                    if (args.Length > 0 && Int32.TryParse(args[0], out a))
-                        if (a > 0 && a <= 5)
-                        {
-                            TelescopeAndBinoculars.lightComponent.intensity = a;
-                            return $"Night Vision Intensity adjusted to {a}";
-                        }
-                        else
-                            return usage;
-                    else
-                        return usage;
-                }
-                else
+                //if (TelescopeAndBinoculars.lightComponent != null)
+                //{
+                //    int a;
+                //    if (args.Length > 0 && Int32.TryParse(args[0], out a))
+                //        if (a > 0 && a <= 5)
+                //        {
+                //           // TelescopeAndBinoculars.lightComponent.intensity = a;
+                //            return $"Night Vision Intensity adjusted to {a}";
+                //        }
+                //        else
+                //            return usage;
+                //    else
+                //        return usage;
+                //}
+                //else
                     return noLS ;
             }
         }

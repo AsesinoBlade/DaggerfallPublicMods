@@ -3,15 +3,16 @@ Shader "Custom/RainEffectShader"
     Properties
     {
         _MainTex("Texture", 2D) = "white" {}
-        _Size("Size", float) = 7
-        _T("Time", float) = 0.25
-        _Distortion("Distortion", range(-5, 5)) = -3
-        _Blur("Blur", range(0,1)) = 0.9
+        _Size("Size", float) = 1.5 // Rain = 2.5, Thunder = 2.5
+        _T("Time", float) = 10 // Rain = 10, thunder = 0.5
+        _Distortion("Distortion", range(-5, 5)) = 2 // Rain = 2, Thunder = 2
+        _Blur("Blur", range(0,1)) = 0.003 // Rain = 0.003, Thunder = 0.01
         _NightVision("NightVision", int) = 0
         _Raining("Raining", int) = 0
         _NightVisionColor("Night Vision Color", Color) = (0,1,0,1)
-        _BaseIntensity("Base Intensity", float) = 5
-        _NightVisionIntensity("Night Vision Intensity", float) = 20
+        _BaseIntensity("Base Intensity", float) = 2.3
+        _NightVisionIntensity("Night Vision Intensity", float) = 50
+        _Ratio("Ratio", float) = 1.7778
     }
         SubShader
         {
@@ -46,6 +47,7 @@ Shader "Custom/RainEffectShader"
                 float4 _NightVisionColor;
                 float _Size, _T, _Distortion, _Blur, _BaseIntensity, _NightVisionIntensity;
                 int _NightVision, _Raining;
+                float _Ratio;
 
                 v2f vert(appdata v)
                 {
@@ -66,7 +68,7 @@ Shader "Custom/RainEffectShader"
                 float3 Layer(float2 UV, float t)
                 {
 
-                    float2 aspect = float2(0.3, 0.1);
+                    float2 aspect = float2( _Ratio, 1);
                     float2 uv = UV * _Size * aspect;
                     uv.y += t * .25;
                     float2 gv = frac(uv) - 0.5;
@@ -138,7 +140,7 @@ Shader "Custom/RainEffectShader"
                     //col = tex2Dlod(_MainTex, float4(i.uv + drops.xy * _Distortion, 0, blur);
                     float2 projUv = i.grabUv.xy / i.grabUv.w;
                     projUv += drops.xy * _Distortion * fade;
-                    blur *= 0.01;
+                    //blur *= 0.01;
                     const float numSamples = 32;
                     float a = N21(i.uv) * 6.2831;
 
