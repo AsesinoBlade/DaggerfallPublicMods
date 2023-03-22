@@ -13,6 +13,7 @@ Shader "Custom/RainEffectShader"
         _BaseIntensity("Base Intensity", float) = 2.3
         _NightVisionIntensity("Night Vision Intensity", float) = 50
         _Ratio("Ratio", float) = 1.7778
+        _Snowing("Snowing", int)  = 0
     }
         SubShader
         {
@@ -46,8 +47,14 @@ Shader "Custom/RainEffectShader"
                 float4 _MainTex_ST;
                 float4 _NightVisionColor;
                 float _Size, _T, _Distortion, _Blur, _BaseIntensity, _NightVisionIntensity;
-                int _NightVision, _Raining;
+                int _NightVision, _Raining, _Snowing;
                 float _Ratio;
+
+                float4 _SnowflakeColor = float4(1,1,1,1);
+                float4 _BackgroundColor = float4(0,0,0,0);
+                float _SnowflakeSize = 0.1;
+                float _SnowflakeFrequency = 0.5;
+                float _Seed = 0;
 
                 v2f vert(appdata v)
                 {
@@ -68,7 +75,7 @@ Shader "Custom/RainEffectShader"
                 float3 Layer(float2 UV, float t)
                 {
 
-                    float2 aspect = float2( _Ratio, 1);
+                    float2 aspect = float2(_Ratio, 1);
                     float2 uv = UV * _Size * aspect;
                     uv.y += t * .25;
                     float2 gv = frac(uv) - 0.5;
@@ -102,6 +109,7 @@ Shader "Custom/RainEffectShader"
                     return  float3(offs, fogTrail);
 
                 }
+
                 fixed4 frag(v2f i) : SV_Target
                 {
 
@@ -113,60 +121,105 @@ Shader "Custom/RainEffectShader"
 
                     col = 0;
 
-                    if (_Raining == 0) // if not raining, it must be night vision
+                    if (_Raining == 0 && _Snowing == 0) // if not raining, it must be night vision
                     {
                         float2 grabPassUv = i.grabUv.xy / i.grabUv.w;
                         col = tex2D(_GrabTexture, grabPassUv);
                         return col * _NightVisionColor * (_BaseIntensity + _NightVisionIntensity);
                     }
 
-                    //use this to see the grabPass texture
-                    //float2 grabPassUv = i.grabUv.xy / i.grabUv.w;
-                    //col = tex2D(_GrabTexture, grabPassUv);
-                    //col.rgb += 0.2;
-                    //return col;
 
-                    float t = fmod(_Time.y + _T, 7200);
 
-                    float3 drops = Layer(i.uv, t);
-                    drops += Layer(i.uv * 1.23 + 7.54, t);
-                    drops += Layer(i.uv * 1.35 + 1.54, t);
-                    drops += Layer(i.uv * 1.57 - 7.54, t);
 
-                    float fade = 1 - saturate(fwidth(i.uv) * 60);
-
-                    float blur = _Blur * 7 * (1 - drops.z * fade);
-
-                    //col = tex2Dlod(_MainTex, float4(i.uv + drops.xy * _Distortion, 0, blur);
-                    float2 projUv = i.grabUv.xy / i.grabUv.w;
-                    projUv += drops.xy * _Distortion * fade;
-                    //blur *= 0.01;
-                    const float numSamples = 32;
-                    float a = N21(i.uv) * 6.2831;
-
-                    col = tex2D(_GrabTexture, projUv);
-                    
-                    for (float i = 0; i < numSamples; i++)
+                    if (_Raining == 1)
                     {
-                        float2 offs = float2(sin(a), cos(a)) * blur;
-                        float d = frac(sin((i + 1) * 546) * 5424);
-                        d = sqrt(d);
-                        offs *= d;
-                        col += tex2D(_GrabTexture, projUv + offs);
-                        a++;
+                        //use this to see the grabPass texture
+                        //float2 grabPassUv = i.grabUv.xy / i.grabUv.w;
+                        //col = tex2D(_GrabTexture, grabPassUv);
+                        //col.rgb += 0.2;
+                        //return col;
+
+                        float t = fmod(_Time.y + _T, 7200);
+
+                        float3 drops = Layer(i.uv, t);
+                        drops += Layer(i.uv * 1.23 + 7.54, t);
+                        drops += Layer(i.uv * 1.35 + 1.54, t);
+                        drops += Layer(i.uv * 1.57 - 7.54, t);
+
+                        float fade = 1 - saturate(fwidth(i.uv) * 60);
+
+                        float blur = _Blur * 7 * (1 - drops.z * fade);
+
+                        //col = tex2Dlod(_MainTex, float4(i.uv + drops.xy * _Distortion, 0, blur);
+                        float2 projUv = i.grabUv.xy / i.grabUv.w;
+                        //projUv += drops.xy * _Distortion * fade;
+                        //blur *= 0.01;
+                        const float numSamples = 32;
+                        float a = N21(i.uv) * 6.2831;
+
+                        col = tex2D(_GrabTexture, projUv);
+
+                        for (float i = 0; i < numSamples; i++)
+                        {
+                            float2 offs = float2(sin(a), cos(a)) * blur;
+                            float d = frac(sin((i + 1) * 546) * 5424);
+                            d = sqrt(d);
+                            offs *= d;
+                            col += tex2D(_GrabTexture, projUv + offs);
+                            a++;
+                        }
+
+                        col /= numSamples;
+
+                        col *= _BaseIntensity;
+                        if (_NightVision == 1)
+                        {
+                            col *= _NightVisionColor * _NightVisionIntensity;
+                        }
+
+                        return col * _BaseIntensity;
+
                     }
-                    
-                    col /= numSamples;
-                    
-                    col *= _BaseIntensity;
-                    if (_NightVision == 1)
+
+                    if (_Snowing == 1)
                     {
-                        col = col * _NightVisionColor * _NightVisionIntensity;
+                        float t = fmod(_Time.y + _T, 7200);
+
+                        //float fade = 1 - saturate(fwidth(i.uv) * 60);
+
+                        float blur = _Blur * 7 * (1 - i.uv );
+
+                        //col = tex2Dlod(_MainTex, float4(i.uv + drops.xy * _Distortion, 0, blur);
+                        float2 projUv = i.grabUv.xy / i.grabUv.w;
+                        projUv += i.grabUv * _Distortion;
+                        //blur *= 0.01;
+                        const float numSamples = 32;
+                        float a = N21(i.uv) * 6.2831;
+
+                        col = tex2D(_GrabTexture, projUv);
+
+                        for (float i = 0; i < numSamples; i++)
+                        {
+                            float2 offs = float2(sin(a), cos(a)) * blur;
+                            float d = frac(sin((i + 1) * 546) * 5424);
+                            d = sqrt(d);
+                            offs *= d;
+                            col += tex2D(_GrabTexture, projUv + offs);
+                            a++;
+                        }
+
+                        col /= numSamples;
+
+                        col *= _BaseIntensity;
+                        if (_NightVision == 1)
+                        {
+                            col = col * _NightVisionColor * _NightVisionIntensity;
+                        }
+
+                        return col * _BaseIntensity;
                     }
 
-                    return col * _BaseIntensity;
-                    
-
+                    return col;
                 }
                 ENDCG
             }

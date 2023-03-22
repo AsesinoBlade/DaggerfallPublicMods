@@ -270,10 +270,28 @@ namespace Telescopes
                               GameManager.Instance.WeatherManager.IsStorming;
 
                 var ThunderShowing = GameManager.Instance.WeatherManager.IsStorming;
-
+                var Snowing = GameManager.Instance.WeatherManager.IsSnowing;
 
                 if (telescopeOverlay)
                 {
+                    if (Snowing)
+                    {
+                        material.SetFloat("_Size", MatSize);
+                        material.SetFloat("_Time", MatTime);
+                        material.SetFloat("_Distortion", MatRainDistortion);
+                        material.SetFloat("_Blur", MatRainBlur);
+                        material.SetFloat("_Ratio", MatRatio);
+                        material.SetFloat("_NightVision", nightVision ? 1 : 0);
+                        material.SetColor("_NightVisionColor", MatNightVisionColor);
+                        material.SetFloat("_NightVisionIntensity", MatNightVisionIntensity);
+
+                        material.SetFloat("_Raining", 0);
+                        material.SetFloat("_Snowing", 1);
+
+                        material.SetFloat("_BaseIntensity", MatBaseIntensity);
+
+                        Graphics.DrawTexture(pos, telescopeLens, 0, Screen.width, 0, Screen.height, material);
+                    }
                     if (RainShowing && !ThunderShowing)
                     {
                         material.SetFloat("_Size", MatSize);
@@ -286,6 +304,7 @@ namespace Telescopes
                         material.SetFloat("_NightVisionIntensity", MatNightVisionIntensity);
 
                         material.SetFloat("_Raining", 1);
+                        material.SetFloat("_Snowing", 0);
 
                         material.SetFloat("_BaseIntensity", MatBaseIntensity);
 
@@ -303,6 +322,7 @@ namespace Telescopes
                         material.SetFloat("_NightVisionIntensity", MatNightVisionIntensity);
 
                         material.SetFloat("_Raining", 1);
+                        material.SetFloat("_Snowing", 0);
 
                         material.SetFloat("_BaseIntensity", MatBaseIntensity);
 
@@ -319,6 +339,7 @@ namespace Telescopes
                         material.SetFloat("_NightVision", nightVision ? 1 : 0);
                         material.SetColor("_NightVisionColor", MatNightVisionColor);
                         material.SetFloat("_Raining", 0);
+                        material.SetFloat("_Snowing", 0);
 
                         material.SetFloat("_BaseIntensity", MatBaseIntensity);
                         material.SetFloat("_NightVisionIntensity", MatNightVisionIntensity); material.SetColor("_NightVisionColor", MatNightVisionColor);
