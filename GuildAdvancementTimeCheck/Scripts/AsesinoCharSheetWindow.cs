@@ -1,6 +1,8 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
 using DaggerfallConnect.Arena2;
 using DaggerfallConnect.Utility;
 using DaggerfallWorkshop.Utility;
@@ -11,9 +13,12 @@ using DaggerfallWorkshop.Game.Utility;
 using DaggerfallWorkshop.Game.Questing;
 using DaggerfallWorkshop.Game.Banking;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using DaggerfallConnect;
 using DaggerfallWorkshop.Game.Formulas;
 using DaggerfallWorkshop.Game.Guilds;
+using UnityEngine.Localization.SmartFormat.Utilities;
 
 namespace DaggerfallWorkshop.Game.UserInterfaceWindows
 {
@@ -21,6 +26,14 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
     {
         private const int noAffiliationsMsgId = 19;
         PlayerEntity playerEntity = GameManager.Instance.PlayerEntity;
+
+        struct BuildingInfo
+        {
+            public string name;
+            public DFLocation.BuildingTypes buildingType;
+            public int buildingKey;
+            public Vector2 position;
+        }
 
         public AsesinoCharSheetWindow(IUserInterfaceManager uiManager)
             : base(uiManager)
@@ -33,11 +46,17 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             // Affiliations button
             Button classButton = DaggerfallUI.AddButton(new Rect(4, 23, 132, 8), NativePanel);
             classButton.OnMouseClick += classsButton_OnMouseClick;
+            characterPortrait.OnMouseClick += showRepairs_OnMouseClick;
         }
 
         private void classsButton_OnMouseClick(BaseScreenComponent sender, Vector2 position)
         {
             ShowReputations();
+        }
+
+        private void showRepairs_OnMouseClick(BaseScreenComponent sender, Vector2 position)
+        {
+            ShowRepairs();
         }
 
         protected TextFile.Token HighLightToken(string text)
@@ -138,6 +157,98 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             messageBox.Show();
         }
 
+        private int GetRegionAndMapIndex(int mapID, out int mapIndex)
+        {
+            mapIndex = -1;
+            if (GameManager.Instance.PlayerGPS.CurrentRegion.MapIdLookup.ContainsKey(mapID))
+            {
+                mapIndex = GameManager.Instance.PlayerGPS.CurrentRegion.MapIdLookup[mapID];
+                return GameManager.Instance.PlayerGPS.CurrentRegionIndex;
+            }
+
+            for (int region = 0; region < GameManager.Instance.PlayerEntity.RegionData.Length; region++)
+            {
+                var regionData = DaggerfallUnity.Instance.ContentReader.MapFileReader.GetRegion(region);
+                if (regionData.MapIdLookup == null || regionData.MapIdLookup.Count == 0)
+                    continue;
+                if (!regionData.MapIdLookup.ContainsKey(mapID))
+                    continue;
+
+                mapIndex = regionData.MapIdLookup[mapID];
+                return region;
+            }
+            
+            return -1;
+        }
+        private string GetTownName(int region,int mapIndex)
+        {
+            var regionData = DaggerfallUnity.Instance.ContentReader.MapFileReader.GetRegion(region);
+
+            foreach (KeyValuePair<string, int> kvp in regionData.MapNameLookup) 
+            {
+                if (kvp.Value == mapIndex)
+                {
+                    return kvp.Key;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private string GetBuildingName(int region, int mapIndex, int buildingKey)
+        {
+            var regionData = DaggerfallUnity.Instance.ContentReader.MapFileReader.GetRegion(region);
+            var location = DaggerfallUnity.Instance.ContentReader.MapFileReader.GetLocation(region, mapIndex);
+
+
+            ExteriorAutomap.BlockLayout[] blockLayout = GameManager.Instance.ExteriorAutomap.ExteriorLayout;
+
+            DFBlock[] blocks = RMBLayout.GetLocationBuildingData(location);
+            int width = location.Exterior.ExteriorData.Width;
+            int height = location.Exterior.ExteriorData.Height;
+
+            int[] workStats = new int[12];
+            int index = 0;
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < width; ++x, ++index)
+                {
+                    ref readonly DFBlock block = ref blocks[index];
+                    BuildingSummary[] buildingsInBlock = RMBLayout.GetBuildingData(block, x, y);
+                    for (int i = 0; i < buildingsInBlock.Length; ++i)
+                    {
+                        ref readonly BuildingSummary buildingSummary = ref buildingsInBlock[i];
+                        if (buildingSummary.buildingKey == buildingKey)
+                        {
+                            try
+                            {
+                                BuildingInfo item;
+                                item.buildingType = buildingSummary.BuildingType;
+                                return BuildingNames.GetName(
+                                    buildingSummary.NameSeed,
+                                    buildingSummary.BuildingType,
+                                    buildingSummary.FactionId,
+                                    location.Name,
+                                    TextManager.Instance.GetLocalizedRegionName(location.RegionIndex));
+
+                            }
+                            catch (Exception e)
+                            {
+                                string exceptionMessage = string.Format(
+                                    "exception occured in function BuildingNames.GetName (exception message: " +
+                                    e.Message + @") with params:
+                                                                        seed: {0}, type: {1}, factionID: {2}, locationName: {3}, regionName: {4}",
+                                    buildingSummary.NameSeed, buildingSummary.BuildingType, buildingSummary.FactionId,
+                                    location.Name, location.RegionName);
+                                DaggerfallUnity.LogMessage(exceptionMessage, true);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
 
         protected override void ShowAffiliationsDialog()
         {
@@ -186,8 +297,87 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             }
         }
 
+        protected void ShowRepairs()
+        {
+            List<TextFile.Token> tokens = new List<TextFile.Token>();
+            List<IGuild> guildMemberships = GameManager.Instance.GuildManager.GetMemberships();
 
-        protected  void ShowReputations()
+            var otherCount = GameManager.Instance.PlayerEntity.OtherItems.Count;
+
+            if (otherCount <= 0)
+                DaggerfallUI.MessageBox("There are no pending repairs.");
+            else
+            {
+                foreach (DaggerfallUnityItem otherItem in GameManager.Instance.PlayerEntity.OtherItems.items.Values)
+                {
+                    string pattern = @"MapID=(\d+),\s*BuildingKey=(\d+)";
+                    Regex regex = new Regex(pattern);
+                    Match match = regex.Match(otherItem.RepairData.GetSaveData().sceneName);
+                    var mapIDString = match.Groups[1].Value;
+
+                    var buildingKeyString = match.Groups[2].Value;
+                    int mapID, buildingKey;
+
+                    if (!int.TryParse(mapIDString, out mapID))
+                        return;
+                    if (!int.TryParse(buildingKeyString, out buildingKey))
+                        return;
+
+                    int mapIndex = -1;
+
+                    var regionId = GetRegionAndMapIndex(mapID, out mapIndex);
+                    if (regionId < 0 || mapIndex < 0)
+                        return;
+                    string regionName = DaggerfallUnity.Instance.ContentReader.MapFileReader.GetRegionName(regionId);
+
+                    var townName = GetTownName(regionId, mapIndex);
+                    if (townName == string.Empty)
+                        return;
+
+                    var buildingName = GetBuildingName(regionId, mapIndex, buildingKey);
+
+                    if(otherItem.RepairData.DaysUntilRepaired() > 1)
+                    {
+                        tokens.Add(TextFile.CreateTextToken(
+                            $"My {otherItem.LongName} is being repaired at {buildingName} in {townName} "));
+                        tokens.Add(TextFile.NewLineToken);
+                        tokens.Add(TextFile.CreateTextToken($"     in {regionName} region.  It should be ready in {otherItem.RepairData.DaysUntilRepaired()} days."));
+                        tokens.Add(TextFile.NewLineToken);
+                        tokens.Add(TextFile.NewLineToken);
+                    }
+                    else if(otherItem.RepairData.DaysUntilRepaired() == 1)
+                    {
+                        tokens.Add(TextFile.CreateTextToken(
+                            $"My {otherItem.LongName} is being repaired at {buildingName} in {townName} "));
+                        tokens.Add(TextFile.NewLineToken);
+                        tokens.Add(TextFile.CreateTextToken($"     in {regionName} region.  It should be ready tomorrow."));
+                        tokens.Add(TextFile.NewLineToken);
+                        tokens.Add(TextFile.NewLineToken);
+                    }
+                    else
+                    {
+                        tokens.Add(TextFile.CreateTextToken(
+                            $"My {otherItem.LongName} is being repaired at {buildingName} in {townName} "));
+                        tokens.Add(TextFile.NewLineToken);
+                        tokens.Add(TextFile.CreateTextToken($"     in {regionName} region.  It should be ready."));
+                        tokens.Add(TextFile.NewLineToken);
+                        tokens.Add(TextFile.NewLineToken);
+                    }
+
+                }
+            
+
+                DaggerfallMessageBox messageBox = new DaggerfallMessageBox(uiManager, this);
+                messageBox.EnableVerticalScrolling(Screen.height /2);
+                messageBox.SetTextTokens(tokens.ToArray(), null, false);
+                messageBox.ClickAnywhereToClose = true;
+                messageBox.Show();
+            }
+        }
+
+
+
+        protected void ShowReputations()
         {
             List<TextFile.Token> tokens = new List<TextFile.Token>();
             List<IGuild> guildMemberships = GameManager.Instance.GuildManager.GetMemberships();
