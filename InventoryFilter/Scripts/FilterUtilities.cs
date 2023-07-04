@@ -29,6 +29,9 @@ public class FilterUtilities : MonoBehaviour
     public static string LegsArmor { get; set; } = "leg legs greave greaves";
     public static string LegsClothes { get; set; } = "leg khajiit suit loincloth skirt pant";
     public static string Feet { get; set; } = "foot feet boot shoe sandal solleret";
+    public static int ShowConditionCostReductionPercentage { get; set; } = 80;
+    public static bool ShowExpandedInfo { get; set; } = true;
+
 
     protected static string[] itemGroupNames = new string[]
     {
