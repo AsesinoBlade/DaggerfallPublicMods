@@ -13,6 +13,7 @@ using DaggerfallWorkshop.Game.Utility;
 using DaggerfallWorkshop.Game.Questing;
 using DaggerfallWorkshop.Game.Banking;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Text.RegularExpressions;
 using DaggerfallConnect;
@@ -305,7 +306,10 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             var otherCount = GameManager.Instance.PlayerEntity.OtherItems.Count;
 
             if (otherCount <= 0)
-                DaggerfallUI.MessageBox("There are no pending repairs.");
+            {
+                tokens.Add(TextFile.CreateTextToken($"No Pending Repairs"));
+                tokens.Add(TextFile.NewLineToken);
+            }
             else
             {
                 foreach (DaggerfallUnityItem otherItem in GameManager.Instance.PlayerEntity.OtherItems.items.Values)
@@ -365,18 +369,73 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
                     }
 
                 }
-            
 
-                DaggerfallMessageBox messageBox = new DaggerfallMessageBox(uiManager, this);
-                messageBox.EnableVerticalScrolling(Screen.height /2);
-                messageBox.SetTextTokens(tokens.ToArray(), null, false);
-                messageBox.ClickAnywhereToClose = true;
-                messageBox.Show();
             }
+
+            DaggerfallMessageBox messageBox = new DaggerfallMessageBox(uiManager, this);
+            messageBox.EnableVerticalScrolling(Screen.height /2);
+            messageBox.SetTextTokens(tokens.ToArray(), null, false);
+            messageBox.ClickAnywhereToClose = true;
+
+            DaggerfallMessageBox houseMsg = ShowHouses(messageBox);
+            if (houseMsg != null)
+                messageBox.AddNextMessageBox(houseMsg);
+
+            messageBox.Show();
         }
 
+        DaggerfallMessageBox ShowHouses(DaggerfallMessageBox msgBox)
 
+        {
+            DaggerfallMessageBox houseMsg = new DaggerfallMessageBox(uiManager, msgBox);
+            List<TextFile.Token> tokens = new List<TextFile.Token>();
+            TextFile.Token tab = TextFile.TabToken;
+            tab.x = 60;
+            int n = 0;
+            tokens.Add(new TextFile.Token(TextFile.Formatting.JustifyCenter, null));
+            tokens.Add(TextFile.CreateFormatTextToken($"Homes Owned", TextFile.Formatting.TextHighlight));
+            tokens.Add(new TextFile.Token(TextFile.Formatting.JustifyCenter, null));
+            tokens.Add(TextFile.NewLineToken);
+            tokens.Add(new TextFile.Token()
+            {
+                text = "Region",
+                formatting = TextFile.Formatting.TextHighlight
+            }); 
+            tokens.Add(tab);
+            tokens.Add(new TextFile.Token()
+            {
+                text = "Town",
+                formatting = TextFile.Formatting.TextHighlight
+            });
+            tokens.Add(TextFile.NewLineToken);
+            foreach (var home in DaggerfallWorkshop.Game.Banking.DaggerfallBankManager.Houses)
+            {
+                if (!string.IsNullOrEmpty(home.location))
+                {
+                    n++;
+                    tokens.Add(TextFile.CreateTextToken(DaggerfallUnity.Instance.ContentReader.MapFileReader.GetRegionName(home.regionIndex)));
+                    tokens.Add(tab);
+                    tokens.Add(TextFile.CreateTextToken(home.location));
 
+                    tokens.Add(TextFile.NewLineToken);
+                }
+            }
+
+            if (n == 0)
+            {
+                tokens.Clear();
+                tokens.Add(TextFile.CreateTextToken($"No Homes Owned"));
+                tokens.Add(TextFile.NewLineToken);
+            }
+
+            houseMsg.SetTextTokens(tokens.ToArray());
+            houseMsg.EnableVerticalScrolling(Screen.height / 2);
+            houseMsg.SetTextTokens(tokens.ToArray(), null, false);
+            houseMsg.ClickAnywhereToClose = true;
+
+            return houseMsg;
+
+        }
         protected void ShowReputations()
         {
             List<TextFile.Token> tokens = new List<TextFile.Token>();
