@@ -2,7 +2,7 @@
     {
         "index": 830,
         "name": "Telescope",
-        "baseWeight": 6,
+        "baseWeight": 2.5,
         "hitPoints": 200,
         "capacityOrTarget": 0,
         "basePrice": 25000,
@@ -22,7 +22,7 @@
     {
         "index": 831,
         "name": "Binoculars",
-        "baseWeight": 6,
+        "baseWeight": 0.5,
         "hitPoints": 200,
         "capacityOrTarget": 0,
         "basePrice": 10000,
@@ -42,7 +42,7 @@
     {
         "index": 832,
         "name": "Night Vision Goggles",
-        "baseWeight": 6,
+        "baseWeight": 0.6,
         "hitPoints": 200,
         "capacityOrTarget": 0,
         "basePrice": 50000,
